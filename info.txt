@@ -1,0 +1,13 @@
+IP ROBOT: 192.168.0.107
+IP NINA: 192.168.0.102
+
+IP ROS1 on NINA: 172.18.0.4
+IP ROS2 on NINA: 172.18.0.2
+
+
+Usefull commands networking:
+local machine, check open ports: netstat -natup
+robot:
+- history | grep woorddatjezoekt
+- dingen met nmap
+- history
