@@ -8,4 +8,4 @@ RUN apt-get update && apt-get install -y \
     rm -rf /var/lib/apt/lists/*
 
 # launch ros package
-CMD ["roslaunch", "roscpp_tutorials", "talker_listener.launch", "inetutils-ping"]
+CMD ["roslaunch", "roscpp_tutorials", "talker_listener.launch"]
