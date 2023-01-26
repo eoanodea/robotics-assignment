@@ -11,7 +11,7 @@ RUN echo "\
 repositories: \n\
   ros2/demos: \n\
     type: git \n\
-    url: https://github.com/ros2/demos.git \n\
+    url: https://github.com/eoanodea/ros2-demos.git \n\
     version: ${ROS_DISTRO} \n\
 " > ../overlay.repos
 RUN vcs import ./ < ../overlay.repos
@@ -56,4 +56,7 @@ RUN sed --in-place --expression \
       /ros_entrypoint.sh
 
 # run launch file
-CMD ["ros2", "launch", "demo_nodes_cpp", "talker_listener.launch.py"]
+CMD ["ros2", "launch", "demo_nodes_py", "talker_listener.launch.py"]
+
+# ENTRYPOINT ["tail"]
+# CMD ["-f","/dev/null"]

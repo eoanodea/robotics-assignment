@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
   ros1:
@@ -19,6 +19,8 @@ services:
     environment:
       - "ROS_HOSTNAME=bridge"
       - "ROS_MASTER_URI=http://ros1:11311"
+    volumes:
+      - ./src/ros_tutorials:/root/src
 
   bridge:
     image: ros:foxy-ros1-bridge
@@ -28,9 +30,7 @@ services:
     networks:
       - my_network
     command: ros2 run ros1_bridge dynamic_bridge
-    
 
 networks:
   my_network:
     driver: bridge
-

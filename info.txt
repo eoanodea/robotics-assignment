@@ -11,3 +11,7 @@ robot:
 - history | grep woorddatjezoekt
 - dingen met nmap
 - history
+
+
+make ross talker in robot and retrieve data from ros1 container on the same topic
+
