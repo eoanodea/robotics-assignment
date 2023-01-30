@@ -56,7 +56,7 @@ RUN sed --in-place --expression \
       /ros_entrypoint.sh
 
 # run launch file
-CMD ["ros2", "launch", "demo_nodes_py", "talker_listener.launch.py"]
+CMD ["ros2", "launch", "demo_nodes_py", "talker_listener_python.launch.py"]
 
 # ENTRYPOINT ["tail"]
 # CMD ["-f","/dev/null"]

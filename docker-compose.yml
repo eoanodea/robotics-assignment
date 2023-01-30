@@ -13,7 +13,7 @@ services:
   ros2:
     build:
       context: ./
-      dockerfile: ros2.Dockerfile
+      dockerfile: ros2-2.Dockerfile
     networks:
       - my_network
     environment:

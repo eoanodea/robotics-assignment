@@ -15,3 +15,10 @@ robot:
 
 make ross talker in robot and retrieve data from ros1 container on the same topic
 
+
+
+file 'talker_listener_python.launch.py' was not found in the share directory of package 'demo_nodes_py' which is at '/opt/ros/overlay_ws/install/demo_nodes_py/share/demo_nodes_py'
+
+
+
+
