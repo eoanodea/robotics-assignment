@@ -1,29 +1,39 @@
-from example_interfaces.srv import AddTwoInts
+#!/usr/bin/env python3
 
 import rclpy
 from rclpy.node import Node
 
+from std_msgs.msg import String
 
-class MinimalService(Node):
+
+class MinimalPublisher(Node):
 
     def __init__(self):
-        super().__init__('minimal_service')
-        self.srv = self.create_service(AddTwoInts, 'add_two_ints', self.add_two_ints_callback)
+        super().__init__('minimal_publisher')
+        self.publisher_ = self.create_publisher(String, 'topic', 10)
+        timer_period = 0.5  # seconds
+        self.timer = self.create_timer(timer_period, self.timer_callback)
+        self.i = 0
 
-    def add_two_ints_callback(self, request, response):
-        response.sum = request.a + request.b
-        self.get_logger().info('Incoming request\na: %d b: %d' % (request.a, request.b))
+    def timer_callback(self):
+        msg = String()
+        msg.data = 'Hello World: %d' % self.i
+        self.publisher_.publish(msg)
+        self.get_logger().info('Publishing: "%s"' % msg.data)
+        self.i += 1
 
-        return response
 
+def main(args=None):
+    rclpy.init(args=args)
 
-def main():
-    rclpy.init()
+    minimal_publisher = MinimalPublisher()
 
-    minimal_service = MinimalService()
+    rclpy.spin(minimal_publisher)
 
-    rclpy.spin(minimal_service)
-
+    # Destroy the node explicitly
+    # (optional - otherwise it will be done automatically
+    # when the garbage collector destroys the node object)
+    minimal_publisher.destroy_node()
     rclpy.shutdown()
 
 

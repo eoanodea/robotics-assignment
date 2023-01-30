@@ -4,7 +4,7 @@ services:
   ros1:
     build:
       context: ./
-      dockerfile: ros1.Dockerfile
+      dockerfile: ros1-2.Dockerfile
     ports:
       - "11311:11311/tcp"
     networks:
@@ -19,8 +19,6 @@ services:
     environment:
       - "ROS_HOSTNAME=bridge"
       - "ROS_MASTER_URI=http://ros1:11311"
-    volumes:
-      - ./src/ros_tutorials:/root/src
 
   bridge:
     image: ros:foxy-ros1-bridge
