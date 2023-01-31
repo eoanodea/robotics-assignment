@@ -25,3 +25,7 @@ Third shell:
 Fourth shell:
 
 `rqt_image_view`
+
+# Notes
+
+Ros1 is a literner on another topic for only the robot is subscribed to

@@ -4,7 +4,7 @@ services:
   ros1:
     build:
       context: ./
-      dockerfile: ros1-2.Dockerfile
+      dockerfile: ros1-3-catkin.Dockerfile
     ports:
       - "11311:11311/tcp"
     networks:
