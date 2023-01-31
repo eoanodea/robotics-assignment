@@ -29,3 +29,5 @@ Fourth shell:
 # Notes
 
 Ros1 is a literner on another topic for only the robot is subscribed to
+
+Topic on robot to listen for controls made by a controller
