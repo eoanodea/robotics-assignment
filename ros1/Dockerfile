@@ -18,7 +18,7 @@ WORKDIR $CATKIN_WS/src
 
 # Copy over files
 RUN mkdir py_srvcli
-COPY py_srvcli_ros_1 ./py_srvcli
+COPY src ./py_srvcli
 RUN chmod +x ./py_srvcli/src/listener.py
 RUN chmod +x ./py_srvcli/launch/py_srvcli.launch
 

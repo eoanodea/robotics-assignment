@@ -1,12 +1,26 @@
 # Robotics Assignment
 
-A talker in ROS 2 (`py_srvcli`), a listener in ROS 1 (`py_srvcli_ros_1`) and a bridge which allows them to talk to each other
+A Docker stack containing `ROS1`, `ROS2` and a `Bridge` container, which can connect, communicate and control a [TURTLEBOT 2](http://kobuki.yujinrobot.com/about2), over a local WiFi network.
+
+```mermaid
+graph LR
+    subgraph Robot
+        A[ROS1]
+    end
+    A[ROS1] <---> B[ROS1 Container]
+    subgraph Docker
+        B[ROS1] <---> |Bridge| D[ROS2]
+        D[ROS2] <---> E[Planner]
+    end
+```
+
+Since the Physical robot's dated software can only run `ROS1`, we set up a `ROS1` container that can listen and talk to the robot, the `ROS1` container sends the information it receives to `ROS2` over a Bridge, which allows bidirectional communication between `ROS1` and `ROS2`.
 
 ## How to run
 
-Make sure you have docker & docker-compose installed
+Make sure you have [docker & docker-compose](https://docs.docker.com/get-docker/) installed
 
-Run `docker-compose up`
+Run `docker-compose up` (might take a while on your first run, took me 50 minutes 🙃)
 
 ## Controlling the Robot via SSH
 
@@ -28,6 +42,6 @@ Fourth shell:
 
 # Notes
 
-Ros1 is a literner on another topic for only the robot is subscribed to
+Ros1 is a listener on another topic for only the robot is subscribed to
 
-Topic on robot to listen for controls made by a controller
+Topic on the robot to listen for controls made by a controller

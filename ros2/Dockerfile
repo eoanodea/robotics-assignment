@@ -17,7 +17,7 @@ RUN sed --in-place --expression \
       '$isource "$OVERLAY_WS/install/setup.bash"' \
       /ros_entrypoint.sh
 
-COPY py_srvcli ./src
+COPY src ./src
 
 RUN rosdep install -i --from-path src --rosdistro foxy -y
 RUN colcon build --packages-select py_srvcli
