@@ -5,39 +5,28 @@ from kobuki_msgs.msg import BumperEvent
 from sensor_msgs.msg import Image
 from std_msgs.msg import String
   
-# TOPIC_NAME = "/mobile_base/events/bumper"
-TOPIC_NAME = "/camera/rgb/image_raw"
-# TOPIC_NAME = "/topic"
   
-# def callback(data):
-      
-#     # print the actual message in its raw format
-#     rospy.loginfo("bumper update %s", data.data)
-#     # rospy.loginfo("Here's what was subscribed: bumper: %d state: %d", data.bumper, data.state)
-#     #  rospy.loginfo("%s is age: %d" % (data.name, data.age))
-      
-#     # otherwise simply print a convenient message on the terminal
-#     print("data received! %s", data.data)
-#     # print('Data from %s received %d', TOPIC_NAME, data.state)
+def callback_str(data):
+    rospy.loginfo("String from ros2 %s", (data.data))
+    pub.publish(data.data)
 
-#     # pub = rospy.Publisher('topic2', String, queue_size=10)
-#     # rospy.init_node('talker', anonymous=True)
-#     # rate = rospy.Rate(10) # 10hz
+def callback_bumper(data):
+    rospy.loginfo("Bumper from robot: bumper: %d, state: %d", data.state, data.bumper)
+    pub2.publish("Bumper from robot: bumper: %d, state: %d", data.state, data.bumper)
 
-#     # string_to_publish = "from ros1 " + data.data
-#     # pub.publish(string_to_publish)
-
-def callback(data):
-  rospy.loginfo("data received! %d", data.width)
-  
   
 def main():
-        # initialize a node by the name 'listener'.
-    # you may choose to name it however you like,
-    # since you don't have to use it ahead
-    rospy.init_node('listener', anonymous=True)
-    rospy.Subscriber(TOPIC_NAME, Image, callback)
-      
+    global pub, pub2
+    pub = rospy.Publisher('/robot/topic', String, queue_size=10)
+    pub2 = rospy.Publisher('/ros2/topic', String, queue_size=10)
+
+    rospy.init_node('ros1_talker_listener')
+    rospy.Subscriber("/topic", String, callback_str)
+    rospy.Subscriber("/mobile_base/events/bumper", BumperEvent, callback_bumper)
+
+    
+    
+    
     # spin() simply keeps python from
     # exiting until this node is stopped
     rospy.spin()

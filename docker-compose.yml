@@ -3,8 +3,8 @@ version: "3"
 services:
   ros1:
     build:
-      context: ./
-      dockerfile: ros1/Dockerfile
+      context: ros1
+      dockerfile: Dockerfile
     ports:
       - "11311:11311/tcp"
     networks:
@@ -12,8 +12,8 @@ services:
 
   ros2:
     build:
-      context: ./
-      dockerfile: ros2/Dockerfile
+      context: ros2
+      dockerfile: Dockerfile
     networks:
       - my_network
     environment:

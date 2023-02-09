@@ -23,6 +23,8 @@ RUN rosdep install -i --from-path src --rosdistro foxy -y
 RUN colcon build --packages-select py_srvcli
 RUN . install/local_setup.bash
 
+
+RUN echo "source /opt/ros/foxy/setup.bash" >> ~/.bashrc
 CMD ["ros2", "run", "py_srvcli", "service"]
 
 # To debug the container

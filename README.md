@@ -20,7 +20,7 @@ Since the Physical robot's dated software can only run `ROS1`, we set up a `ROS1
 
 Make sure you have [docker & docker-compose](https://docs.docker.com/get-docker/) installed
 
-Run `docker-compose up` (might take a while on your first run, took me 50 minutes 🙃)
+Run `docker-compose up` (might take a while on your first run, my last fresh install took me 50 minutes 🙃)
 
 ## Controlling the Robot via SSH
 
@@ -39,6 +39,9 @@ Third shell:
 Fourth shell:
 
 `rqt_image_view`
+
+Fifth shell (just for debugging):
+`roslaunch pub_sub_testing pub_sub_testing.launch`
 
 # Notes
 

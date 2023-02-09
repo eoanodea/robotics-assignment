@@ -4,7 +4,8 @@ FROM ros:noetic
 ARG NOETIC_WS=/opt/ros/noetic
 ARG CATKIN_WS=/root/catkin_ws
 
-RUN apt-get update \
+RUN apt-get update \ 
+  && apt-get install -y iputils-ping \
   && apt-get install -y git \
   && rm -rf /var/lib/apt/lists/*
 
@@ -18,7 +19,7 @@ WORKDIR $CATKIN_WS/src
 
 # Copy over files
 RUN mkdir py_srvcli
-COPY src ./py_srvcli
+COPY ./src ./py_srvcli
 RUN chmod +x ./py_srvcli/src/listener.py
 RUN chmod +x ./py_srvcli/launch/py_srvcli.launch
 
@@ -32,6 +33,9 @@ RUN git clone https://github.com/yujinrobot/kobuki_msgs.git -b noetic
 
 WORKDIR $CATKIN_WS
 RUN . ${CATKIN_WS}/devel/setup.sh && catkin_make
+
+# RUN echo "export ROS_MASTER_URI=http://192.168.0.107:11311" >> ~/.bashrc
+# RUN echo "export ROS_HOSTNAME=192.168.0.107" >> ~/.bashrc
 
 RUN echo "source /root/catkin_ws/devel/setup.bash" >> ~/.bashrc
 CMD ["bash", "-c", "source /root/catkin_ws/devel/setup.bash && roslaunch py_srvcli py_srvcli.launch"]
