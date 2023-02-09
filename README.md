@@ -93,6 +93,30 @@ Make sure you have [docker & docker-compose](https://docs.docker.com/get-docker/
 
 Run `docker-compose up` (might take a while on your first run, my last fresh install took me 50 minutes 🙃)
 
+Three containers should be created within a stack, with the following names:
+
+- `assignment-ros1-1`
+- `assignment-ros2-1`
+- `assignment-bridge-1`
+
+## Troubleshooting
+
+If you want to shell into a particular container for debugging purposes, you can run the following command:
+
+`docker exec -it [container-name] bash`
+
+E.g.
+
+`docker exec -it assignment-ros1-1 bash`
+
+You may run into an issue where you cannot access the ROS CLI. In that case you should source the setup file
+
+In ROS2: `source install/setup.bash`
+
+In ROS1: `source devel/setup.bash`
+
+(You shouldn't have to do this in the ROS1 container)
+
 ## Controlling the Robot via SSH
 
 First shell:
