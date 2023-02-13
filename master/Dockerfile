@@ -4,7 +4,6 @@ WORKDIR /usr/src/app
 
 RUN python -m pip install --upgrade pip
 
-# RUN apt update
 # RUN apt install -y redis-server
 
 RUN apt-get update \ 

@@ -1,28 +1,27 @@
 version: "3"
 
 services:
-  # redis-client:
-  #   image: redis
-  #   volumes:
-  #     - ./master/redis-conf:/redis-conf
-  #   command: redis-cli -h 192.168.0.107 -p 6379
-  #   ports:
-  #     - "6379:6379/tcp"
   master:
-    network_mode: "host"
     build:
       context: master
       dockerfile: Dockerfile
     environment:
-      - "ROBOT_IP=192.168.0.107"
+      - "REDIS_URL=${REDIS_URL}"
+      - "REDIS_PORT=${REDIS_PORT}"
     ports:
-      - "6379:6379"
-
-  #   networks:
-  #     - my_network
-  # # networks:
-  #   - mynetwork
-# networks:
-#   my_network:
-#     name: host
-#     external: true
+      - "${REDIS_PORT}:${REDIS_PORT}"
+    depends_on:
+      - robot
+  robot:
+    build:
+      context: robot
+      dockerfile: Dockerfile
+    environment:
+      - "REDIS_URL=${REDIS_URL}"
+      - "REDIS_PORT=${REDIS_PORT}"
+    depends_on:
+      - redis
+  redis:
+    image: "redis"
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes

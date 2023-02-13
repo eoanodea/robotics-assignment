@@ -1,13 +1,17 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import rospy
 import redis
 from std_msgs.msg import String
 from kobuki_msgs.msg import BumperEvent
-  
+import os
+
+REDIS_HOST = os.environ['REDIS_URL']
+REDIS_PORT = os.environ['REDIS_PORT']
   
 def callback_str(data):
     rospy.loginfo("String from ros1 %s", (data.data))
+    R.publish("/debug/percept", data.data)
 
 def callback_bumper(data): 
     rospy.loginfo("Bumper from ros1 %s", (data.bumper))
@@ -15,24 +19,26 @@ def callback_bumper(data):
   
 def main():
     global R
-    R = redis.Redis(decode_responses=True)
-    # pubsub = R.pubsub()
+    R = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, decode_responses=True)
 
+    rospub = rospy.Publisher('/debug/command', String, queue_size=10)
     rospy.init_node('robot_listener', anonymous=True)
+    rospy.Subscriber("/debug/percept", String, callback_str)
     rospy.Subscriber("/mobile_base/events/bumper", BumperEvent, callback_bumper)
 
-    
+    pubsub = R.pubsub()
+    pubsub.subscribe('/debug/command')
+
+    for msg in pubsub.listen():
+        print("Command recieved", msg)
+        if msg is not None and isinstance(msg, dict):
+            rospub.publish(msg.get('data'))
     
     
     # spin() simply keeps python from
     # exiting until this node is stopped
     rospy.spin()
     
-    # rate = rospy.Rate(700) # 10hz
-
-    # while not rospy.is_shutdown():
-    #     rate.sleep()
-
   
 if __name__ == '__main__':
       

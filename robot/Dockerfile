@@ -10,6 +10,10 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 
 
+RUN apt update \
+  && apt install -y python3-pip \
+  && pip install redis
+
 # Workspace setup
 WORKDIR ${NOETIC_WS}/share
 
@@ -18,10 +22,13 @@ RUN mkdir -p ${CATKIN_WS}/src
 WORKDIR $CATKIN_WS/src
 
 # Copy over files
-RUN mkdir py_srvcli
-COPY ./src ./py_srvcli
-RUN chmod +x ./py_srvcli/src/listener.py
-RUN chmod +x ./py_srvcli/launch/py_srvcli.launch
+RUN mkdir pub_sub_testing
+COPY . pub_sub_testing
+
+WORKDIR $CATKIN_WS/src/pub_sub_testing
+
+RUN chmod +x src/listener.py
+RUN chmod +x launch/pub_sub_testing.launch
 
 WORKDIR $CATKIN_WS
 RUN . ${NOETIC_WS}/setup.sh && catkin_make
@@ -39,3 +46,7 @@ RUN . ${CATKIN_WS}/devel/setup.sh && catkin_make
 
 RUN echo "source /root/catkin_ws/devel/setup.bash" >> ~/.bashrc
 CMD ["bash", "-c", "source /root/catkin_ws/devel/setup.bash && roslaunch pub_sub_testing pub_sub_testing.launch"]
+
+
+# ENTRYPOINT ["tail"]
+# CMD ["-f","/dev/null"]
