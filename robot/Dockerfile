@@ -38,4 +38,4 @@ RUN . ${CATKIN_WS}/devel/setup.sh && catkin_make
 # RUN echo "export ROS_HOSTNAME=192.168.0.107" >> ~/.bashrc
 
 RUN echo "source /root/catkin_ws/devel/setup.bash" >> ~/.bashrc
-CMD ["bash", "-c", "source /root/catkin_ws/devel/setup.bash && roslaunch py_srvcli py_srvcli.launch"]
+CMD ["bash", "-c", "source /root/catkin_ws/devel/setup.bash && roslaunch pub_sub_testing pub_sub_testing.launch"]

@@ -143,3 +143,54 @@ Fifth shell (just for debugging):
 Ros1 is a listener on another topic for only the robot is subscribed to
 
 Topic on the robot to listen for controls made by a controller
+
+## Available Topics (On Kobuki Node)
+
+The following topics are available when running Kobuki Node:
+
+### Published topics:
+
+```
+ * /mobile_base/events/robot_state [kobuki_msgs/RobotStateEvent] 1 publisher
+ * /mobile_base/debug/raw_data_stream [std_msgs/String] 1 publisher
+ * /tf [tf2_msgs/TFMessage] 1 publisher
+ * /odom [nav_msgs/Odometry] 1 publisher
+ * /mobile_base/sensors/core [kobuki_msgs/SensorState] 1 publisher
+ * /mobile_base/events/button [kobuki_msgs/ButtonEvent] 1 publisher
+ * /mobile_base/events/power_system [kobuki_msgs/PowerSystemEvent] 1 publisher
+ * /diagnostics [diagnostic_msgs/DiagnosticArray] 1 publisher
+ * /mobile_base/events/digital_input [kobuki_msgs/DigitalInputEvent] 1 publisher
+ * /mobile_base/events/wheel_drop [kobuki_msgs/WheelDropEvent] 1 publisher
+ * /mobile_base/debug/raw_control_command [std_msgs/Int16MultiArray] 1 publisher
+ * /joint_states [sensor_msgs/JointState] 1 publisher
+ * /rosout [rosgraph_msgs/Log] 3 publishers
+ * /mobile_base/debug/raw_data_command [std_msgs/String] 1 publisher
+ * /mobile_base/sensors/imu_data_raw [sensor_msgs/Imu] 1 publisher
+ * /mobile_base/sensors/dock_ir [kobuki_msgs/DockInfraRed] 1 publisher
+ * /rosout_agg [rosgraph_msgs/Log] 1 publisher
+ * /mobile_base/events/bumper [kobuki_msgs/BumperEvent] 1 publisher
+ * /diagnostics_toplevel_state [diagnostic_msgs/DiagnosticStatus] 1 publisher
+ * /mobile_base/controller_info [kobuki_msgs/ControllerInfo] 1 publisher
+ * /mobile_base/events/cliff [kobuki_msgs/CliffEvent] 1 publisher
+ * /mobile_base/sensors/imu_data [sensor_msgs/Imu] 1 publisher
+ * /mobile_base_nodelet_manager/bond [bond/Status] 2 publishers
+ * /mobile_base/version_info [kobuki_msgs/VersionInfo] 1 publisher
+ * /diagnostics_agg [diagnostic_msgs/DiagnosticArray] 1 publisher
+```
+
+### Subscribed topics:
+
+```
+ * /mobile_base/commands/motor_power [kobuki_msgs/MotorPower] 1 subscriber
+ * /mobile_base/commands/external_power [kobuki_msgs/ExternalPower] 1 subscriber
+ * /mobile_base/commands/reset_odometry [std_msgs/Empty] 1 subscriber
+ * /rosout [rosgraph_msgs/Log] 1 subscriber
+ * /mobile_base/commands/sound [kobuki_msgs/Sound] 1 subscriber
+ * /mobile_base_nodelet_manager/bond [bond/Status] 2 subscribers
+ * /diagnostics [diagnostic_msgs/DiagnosticArray] 1 subscriber
+ * /mobile_base/commands/digital_output [kobuki_msgs/DigitalOutput] 1 subscriber
+ * /mobile_base/commands/velocity [geometry_msgs/Twist] 1 subscriber
+ * /mobile_base/commands/led1 [kobuki_msgs/Led] 1 subscriber
+ * /mobile_base/commands/led2 [kobuki_msgs/Led] 1 subscriber
+ * /mobile_base/commands/controller_info [kobuki_msgs/ControllerInfo] 1 subscriber
+```

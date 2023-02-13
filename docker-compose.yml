@@ -1,34 +1,27 @@
 version: "3"
 
 services:
-  ros1:
+  # redis-client:
+  #   image: redis
+  #   volumes:
+  #     - ./master/redis-conf:/redis-conf
+  #   command: redis-cli -h 192.168.0.107 -p 6379
+  #   ports:
+  #     - "6379:6379/tcp"
+  master:
+    network_mode: "host"
     build:
-      context: ros1
+      context: master
       dockerfile: Dockerfile
+    environment:
+      - "ROBOT_IP=192.168.0.107"
     ports:
-      - "11311:11311/tcp"
-    networks:
-      - my_network
-
-  ros2:
-    build:
-      context: ros2
-      dockerfile: Dockerfile
-    networks:
-      - my_network
-    environment:
-      - "ROS_HOSTNAME=bridge"
-      - "ROS_MASTER_URI=http://ros1:11311"
-
-  bridge:
-    image: ros:foxy-ros1-bridge
-    environment:
-      - "ROS_HOSTNAME=bridge"
-      - "ROS_MASTER_URI=http://ros1:11311"
-    networks:
-      - my_network
-    command: ros2 run ros1_bridge dynamic_bridge
-
-networks:
-  my_network:
-    driver: bridge
+      - "6379:6379"
+  #   networks:
+  #     - my_network
+  # # networks:
+  #   - mynetwork
+# networks:
+#   my_network:
+#     name: host
+#     external: true
