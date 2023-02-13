@@ -7,6 +7,9 @@ RUN python -m pip install --upgrade pip
 # RUN apt update
 # RUN apt install -y redis-server
 
+RUN apt-get update \ 
+  && apt-get install -y iputils-ping
+
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
