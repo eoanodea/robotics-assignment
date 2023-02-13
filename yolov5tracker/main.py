@@ -52,20 +52,19 @@ while True:
         x, y, w, h, id = box_id
         ids.append(id)
     if ids:
-        minId=min(ids)
+        sortId = sorted(ids)
     for box_id in boxes_ids:
         x,y,w,h,id=box_id
         cv2.rectangle(frame, (x, y), (w, h), (51, 231, 247), 3)
-        cv2.putText(frame, str(id), (x, y + 30), cv2.FONT_HERSHEY_DUPLEX, 1.2, (249, 247, 247), 2)
-        if id==minId:
-            print(id)
+        if id==sortId[0]:
+            # print(id)
             xTrack = int((x + w) / 2)
             yTrack = int((y + h) / 2)
+            cv2.putText(frame, str('FOLLOWING'), (x, y + 30), cv2.FONT_HERSHEY_DUPLEX, 1.2, (64, 214, 119), 2)
             result2a=cv2.pointPolygonTest(np.array(area_2a, np.int32), (int(xTrack), int(yTrack)), False)
             result1a=cv2.pointPolygonTest(np.array(area_1a,np.int32),(int(xTrack),int(yTrack)),False)
             result2b=cv2.pointPolygonTest(np.array(area_2b, np.int32), (int(xTrack), int(yTrack)), False)
             result1b=cv2.pointPolygonTest(np.array(area_1b,np.int32),(int(xTrack),int(yTrack)),False)
-            cv2.putText(frame, 'o', (xTrack, yTrack), cv2.FONT_HERSHEY_DUPLEX, 0.5, (0, 0, 255), 1)
             if result1a==1:
                 result='BIG LEFT'
             elif result2a==1:
@@ -76,7 +75,11 @@ while True:
                 result='right'
             else:
                 result='center'
-            print(result)
+            # print(result)
+        elif id==sortId[1]:
+            cv2.putText(frame, str('NEXT'), (x, y + 30), cv2.FONT_HERSHEY_DUPLEX, 1.2, (250, 241, 72), 2)
+        else:
+            cv2.putText(frame, str('NOT FOLLOWED'), (x, y + 30), cv2.FONT_HERSHEY_DUPLEX, 1.2, (250, 84, 72), 2)
     cv2.imshow('FRAME',frame)
     if cv2.waitKey(1)&0xFF==27:
         break
