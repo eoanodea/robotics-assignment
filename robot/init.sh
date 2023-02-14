@@ -10,18 +10,22 @@ sed -i '/COMMAND_CHANNEL/d' ~/.bashrc
 
 echo "Adding configuration to ~/.bashrc"
 # Add the files
-echo 'Generated from ~/catkin_ws/src/pub_sub_testing/init.sh\n'
+echo 'Generated from ~/catkin_make_ws/src/pub_sub_testing/init.sh\n'
 echo export REDIS_URL=localhost >> ~/.bashrc
 echo export REDIS_PORT=6379 >> ~/.bashrc
 echo export PERCEPT_CHANNEL=/debug/percept >> ~/.bashrc
 echo export COMMAND_CHANNEL=/debug/command >> ~/.bashrc
 
+source ~/.bashrc
+
+cd ~/catkin_ws/src/pub_sub_testing
+
 echo "Configuring project with catkin"
 chmod +x ./src/listener.py
 source ~/catkin_ws/devel/setup.bash
 
-echo "Building ~/catkin_ws workspace"
-cd ~/catkin_ws && catkin build
+# echo "Building ~/catkin_ws workspace"
+# cd ~/catkin_ws && catkin build
 
 
 echo "Building ~/catkin_make_ws workspace"

@@ -2,20 +2,40 @@
 
 import rospy
 import redis
+import os
+import base64
+import numpy as np
+
 from std_msgs.msg import String
 from kobuki_msgs.msg import BumperEvent
-import os
+from sensor_msgs.msg import Image
 
 REDIS_HOST = os.environ['REDIS_URL']
 REDIS_PORT = os.environ['REDIS_PORT']
+PERCEPT_CHANNEL = os.environ['PERCEPT_CHANNEL']
+COMMAND_CHANNEL = os.environ['COMMAND_CHANNEL']
+
   
 def callback_str(data):
     rospy.loginfo("String from ros1 %s", (data.data))
-    R.publish("/debug/percept", data.data)
+    R.publish(PERCEPT_CHANNEL, data.data)
 
-def callback_bumper(data): 
-    rospy.loginfo("Bumper from ros1 %s", (data.bumper))
-    R.publish("/mobile_base/events/bumper", data.bumper)
+def callback_image(image_data):
+    rospy.loginfo("Image data from ROS1")
+    # Convert the data array to a numpy array of uint8 values
+    data_array = np.array(image_data.data, dtype=np.uint8)
+
+    # Assume the image data is stored in a dictionary variable called 'image_data'
+    # Convert the 'data' field to a bytes object
+    image_bytes = bytes(data_array)
+
+    # Encode the image bytes as base64
+    base64_image = base64.b64encode(image_bytes)
+
+    # Print the base64 string
+    print(base64_image.decode('utf-8'))
+
+    R.publish(PERCEPT_CHANNEL, base64_image.decode('utf-8'))
   
 def main():
     global R
@@ -24,10 +44,12 @@ def main():
     rospub = rospy.Publisher('/debug/command', String, queue_size=10)
     rospy.init_node('robot_listener', anonymous=True)
     rospy.Subscriber("/debug/percept", String, callback_str)
-    rospy.Subscriber("/mobile_base/events/bumper", BumperEvent, callback_bumper)
+
+
+    rospy.Subscriber("/camera/depth/image_raw", Image, callback_image)
 
     pubsub = R.pubsub()
-    pubsub.subscribe('/debug/command')
+    pubsub.subscribe(COMMAND_CHANNEL)
 
     for msg in pubsub.listen():
         print("Command recieved", msg)
@@ -47,14 +69,3 @@ if __name__ == '__main__':
         main()
     except rospy.ROSInterruptException:
         pass
-
-
-# echo export REDIS_URL=localhost >> ~/.bashrc
-# echo export REDIS_PORT=6379 >> ~/.bashrc
-# echo export 
-# scp ./robot/src/* ubuntu@192.168.0.107:/home/ubuntu/catkin_ws/src/pub_sub_testing/src/
-# cd ~/catkin_ws
-# source devel/setup.bash
-# chmod +x listener.py
-# catkin_make
-# roslaunch pub_sub_testing pub_sub_testing.launch
