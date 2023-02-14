@@ -149,70 +149,96 @@ The following topics are available when running Kobuki Node:
 
 ### 📣 Published topics:
 
-| Topic Name                                         | Message Type                          | Number of Publishers |
-| -------------------------------------------------- | ------------------------------------- | -------------------- |
-| /camera/depth/image                                | sensor_msgs/Image                     | 1                    |
-| /camera/depth_registered/sw_registered/image_rect  | sensor_msgs/Image                     | 1                    |
-| /camera/depth_registered/points                    | sensor_msgs/PointCloud2               | 1                    |
-| /cmd_vel_mux/parameter_descriptions                | dynamic_reconfigure/ConfigDescription | 1                    |
-| /mobile_base/events/robot_state                    | kobuki_msgs/RobotStateEvent           | 1                    |
-| /mobile_base/debug/raw_data_stream                 | std_msgs/String                       | 1                    |
-| /tf                                                | tf2_msgs/TFMessage                    | 5                    |
-| /odom                                              | nav_msgs/Odometry                     | 1                    |
-| /mobile_base/sensors/core                          | kobuki_msgs/SensorState               | 1                    |
-| /camera/rgb_rectify_color/parameter_updates        | dynamic_reconfigure/Config            | 1                    |
-| /cmd_vel_mux/parameter_updates                     | dynamic_reconfigure/Config            | 1                    |
-| /keyop_vel_smoother/parameter_updates              | dynamic_reconfigure/Config            | 1                    |
-| /mobile_base/events/button                         | kobuki_msgs/ButtonEvent               | 1                    |
-| /camera/depth_rectify_depth/parameter_descriptions | dynamic_reconfigure/ConfigDescription | 1                    |
-| /camera/depth_registered/sw_registered/camera_info | sensor_msgs/CameraInfo                | 1                    |
-| /mobile_base/events/power_system                   | kobuki_msgs/PowerSystemEvent          | 1                    |
-| /camera/depth_rectify_depth/parameter_updates      | dynamic_reconfigure/Config            | 1                    |
-| /cmd_vel_mux/active                                | std_msgs/String                       | 1                    |
-| /diagnostics                                       | diagnostic_msgs/DiagnosticArray       | 1                    |
-| /mobile_base/events/digital_input                  | kobuki_msgs/DigitalInputEvent         | 1                    |
-| /cmd_vel_mux/safety_controller                     | geometry_msgs/Twist                   | 1                    |
-| /mobile_base/events/wheel_drop                     | kobuki_msgs/WheelDropEvent            | 1                    |
-| /keyop_vel_smoother/parameter_descriptions         | dynamic_reconfigure/ConfigDescription | 1                    |
-| /mobile_base/debug/raw_control_command             | std_msgs/Int16MultiArray              | 1                    |
-| /joint_states                                      | sensor_msgs/JointState                | 1                    |
-| /rosout                                            | rosgraph_msgs/Log                     | 20                   |
-| /mobile_base/debug/raw_data_command                | std_msgs/String                       | 1                    |
-| /mobile_base/sensors/imu_data_raw                  | sensor_msgs/Imu                       | 1                    |
-| /mobile_base/sensors/dock_ir                       | kobuki_msgs/DockInfraRed              | 1                    |
-| /rosout_agg                                        | rosgraph_msgs/Log                     | 1                    |
-| /mobile_base/events/bumper                         | kobuki_msgs/BumperEvent               | 1                    |
-| /cmd_vel_mux/keyboard_teleop                       | geometry_msgs/Twist                   | 1                    |
-| /mobile_base/commands/velocity                     | geometry_msgs/Twist                   | 1                    |
-| /diagnostics_toplevel_state                        | diagnostic_msgs/DiagnosticStatus      | 1                    |
-| /mobile_base/controller_info                       | kobuki_msgs/ControllerInfo            | 1                    |
+| Topic                                                 | Message Type                            |
+| ----------------------------------------------------- | --------------------------------------- |
+| /camera/depth/image                                   | [sensor_msgs/Image]                     |
+| /camera/rgb/image_raw                                 | [sensor_msgs/Image]                     |
+| /camera/depth_registered/sw_registered/image_rect     | [sensor_msgs/Image]                     |
+| /camera/depth_registered/points                       | [sensor_msgs/PointCloud2]               |
+| /cmd_vel_mux/parameter_descriptions                   | [dynamic_reconfigure/ConfigDescription] |
+| /mobile_base/events/robot_state                       | [kobuki_msgs/RobotStateEvent]           |
+| /mobile_base/debug/raw_data_stream                    | [std_msgs/String]                       |
+| /tf                                                   | [tf2_msgs/TFMessage]                    |
+| /odom                                                 | [nav_msgs/Odometry]                     |
+| /camera/depth/image_raw                               | [sensor_msgs/Image]                     |
+| /mobile_base/sensors/core                             | [kobuki_msgs/SensorState]               |
+| /camera/rgb_rectify_color/parameter_updates           | [dynamic_reconfigure/Config]            |
+| /camera/depth_registered/camera_info                  | [sensor_msgs/CameraInfo]                |
+| /camera/camera_nodelet_manager/bond                   | [bond/Status]                           |
+| /camera/depth/camera_info                             | [sensor_msgs/CameraInfo]                |
+| /keyop_vel_smoother/parameter_updates                 | [dynamic_reconfigure/Config]            |
+| /mobile_base/events/button                            | [kobuki_msgs/ButtonEvent]               |
+| /camera/depth/image_rect                              | [sensor_msgs/Image]                     |
+| /camera/projector/camera_info                         | [sensor_msgs/CameraInfo]                |
+| /camera/rgb/camera_info                               | [sensor_msgs/CameraInfo]                |
+| /keyop_vel_smoother/parameter_descriptions            | [dynamic_reconfigure/ConfigDescription] |
+| /mobile_base/events/power_system                      | [kobuki_msgs/PowerSystemEvent]          |
+| /camera/depth_rectify_depth/parameter_updates         | [dynamic_reconfigure/Config]            |
+| /cmd_vel_mux/active                                   | [std_msgs/String]                       |
+| /diagnostics                                          | [diagnostic_msgs/DiagnosticArray]       |
+| /cmd_vel_mux/parameter_updates                        | [dynamic_reconfigure/Config]            |
+| /mobile_base/events/digital_input                     | [kobuki_msgs/DigitalInputEvent]         |
+| /cmd_vel_mux/safety_controller                        | [geometry_msgs/Twist]                   |
+| /camera/depth_registered/image_raw                    | [sensor_msgs/Image]                     |
+| /mobile_base/events/wheel_drop                        | [kobuki_msgs/WheelDropEvent]            |
+| /camera/depth_registered/sw_registered/camera_info    | [sensor_msgs/CameraInfo]                |
+| /mobile_base/debug/raw_control_command                | [std_msgs/Int16MultiArray]              |
+| /joint_states                                         | [sensor_msgs/JointState]                |
+| /rosout                                               | [rosgraph_msgs/Log]                     |
+| /mobile_base/debug/raw_data_command                   | [std_msgs/String]                       |
+| /mobile_base/sensors/imu_data_raw                     | [sensor_msgs/Imu]                       |
+| /mobile_base/sensors/dock_ir                          | [kobuki_msgs/DockInfraRed]              |
+| /rosout_agg                                           | [rosgraph_msgs/Log]                     |
+| /camera/driver/parameter_descriptions                 | [dynamic_reconfigure/ConfigDescription] |
+| /mobile_base/events/bumper                            | [kobuki_msgs/BumperEvent]               |
+| /cmd_vel_mux/keyboard_teleop                          | [geometry_msgs/Twist]                   |
+| /mobile_base/commands/velocity                        | [geometry_msgs/Twist]                   |
+| /camera/ir/image                                      | [sensor_msgs/Image]                     |
+| /diagnostics_toplevel_state                           | [diagnostic_msgs/DiagnosticStatus]      |
+| /mobile_base/controller_info                          | [kobuki_msgs/ControllerInfo]            |
+| /camera/depth_registered/sw_registered/image_rect_raw | [sensor_msgs/Image]                     |
+| /mobile_base/commands/motor_power                     | [kobuki_msgs/MotorPower]                |
+| /mobile_base/events/cliff                             | [kobuki_msgs/CliffEvent]                |
+| /camera/depth/image_rect_raw                          | [sensor_msgs/Image]                     |
+| /camera/depth_rectify_depth/parameter_descriptions    | [dynamic_reconfigure/ConfigDescription] |
+| /camera/rgb/image_rect_color                          | [sensor_msgs/Image]                     |
+| /keyop_vel_smoother/raw_cmd_vel                       | [geometry_msgs/Twist]                   |
+| /camera/rgb_rectify_color/parameter_descriptions      | [dynamic_reconfigure/ConfigDescription] |
+| /mobile_base/sensors/imu_data                         | [sensor_msgs/Imu]                       |
+| /camera/driver/parameter_updates                      | [dynamic_reconfigure/Config]            |
+| /mobile_base_nodelet_manager/bond                     | [bond/Status]                           |
+| /camera/ir/camera_info                                | [sensor_msgs/CameraInfo]                |
+| /mobile_base/version_info                             | [kobuki_msgs/VersionInfo]               |
+| /camera/depth/points                                  | [sensor_msgs/PointCloud2]               |
+| /diagnostics_agg                                      | [diagnostic_msgs/DiagnosticArray]       |
 
 ### 📡 Subscribed topics:
 
-| Topic                                 | Message Type                    | Number of Subscribers |
-| ------------------------------------- | ------------------------------- | --------------------- |
-| /tf                                   | tf2_msgs/TFMessage              | 1                     |
-| /odom                                 | nav_msgs/Odometry               | 1                     |
-| /mobile_base/commands/reset_odometry  | std_msgs/Empty                  | 1                     |
-| /tf_static                            | tf2_msgs/TFMessage              | 1                     |
-| /diagnostics                          | diagnostic_msgs/DiagnosticArray | 1                     |
-| /cmd_vel_mux/safety_controller        | geometry_msgs/Twist             | 1                     |
-| /mobile_base/events/wheel_drop        | kobuki_msgs/WheelDropEvent      | 1                     |
-| /mobile_base/commands/external_power  | kobuki_msgs/ExternalPower       | 1                     |
-| /rosout                               | rosgraph_msgs/Log               | 1                     |
-| /keyop/teleop                         | kobuki_msgs/KeyboardInput       | 1                     |
-| /kobuki_safety_controller/disable     | std_msgs/Empty                  | 1                     |
-| /mobile_base/commands/sound           | kobuki_msgs/Sound               | 1                     |
-| /mobile_base/events/bumper            | kobuki_msgs/BumperEvent         | 1                     |
-| /cmd_vel_mux/keyboard_teleop          | geometry_msgs/Twist             | 1                     |
-| /mobile_base/commands/digital_output  | kobuki_msgs/DigitalOutput       | 1                     |
-| /mobile_base/commands/velocity        | geometry_msgs/Twist             | 1                     |
-| /mobile_base/commands/led1            | kobuki_msgs/Led                 | 1                     |
-| /mobile_base/commands/led2            | kobuki_msgs/Led                 | 1                     |
-| /kobuki_safety_controller/enable      | std_msgs/Empty                  | 1                     |
-| /mobile_base/commands/motor_power     | kobuki_msgs/MotorPower          | 1                     |
-| /mobile_base/events/cliff             | kobuki_msgs/CliffEvent          | 1                     |
-| /keyop_vel_smoother/raw_cmd_vel       | geometry_msgs/Twist             | 1                     |
-| /mobile_base_nodelet_manager/bond     | bond/Status                     | 5                     |
-| /kobuki_safety_controller/reset       | std_msgs/Empty                  | 1                     |
-| /mobile_base/commands/controller_info | kobuki_msgs/ControllerInfo      | 1                     |
+| Topic                                 | Message Type                      |
+| ------------------------------------- | --------------------------------- |
+| /tf                                   | [tf2_msgs/TFMessage]              |
+| /odom                                 | [nav_msgs/Odometry]               |
+| /mobile_base/events/wheel_drop        | [kobuki_msgs/WheelDropEvent]      |
+| /mobile_base/commands/reset_odometry  | [std_msgs/Empty]                  |
+| /tf_static                            | [tf2_msgs/TFMessage]              |
+| /diagnostics                          | [diagnostic_msgs/DiagnosticArray] |
+| /cmd_vel_mux/safety_controller        | [geometry_msgs/Twist]             |
+| /camera/camera_nodelet_manager/bond   | [bond/Status]                     |
+| /mobile_base/commands/external_power  | [kobuki_msgs/ExternalPower]       |
+| /rosout                               | [rosgraph_msgs/Log]               |
+| /keyop/teleop                         | [kobuki_msgs/KeyboardInput]       |
+| /kobuki_safety_controller/disable     | [std_msgs/Empty]                  |
+| /mobile_base/commands/sound           | [kobuki_msgs/Sound]               |
+| /mobile_base/events/bumper            | [kobuki_msgs/BumperEvent]         |
+| /cmd_vel_mux/keyboard_teleop          | [geometry_msgs/Twist]             |
+| /mobile_base/commands/digital_output  | [kobuki_msgs/DigitalOutput]       |
+| /mobile_base/commands/velocity        | [geometry_msgs/Twist]             |
+| /mobile_base/commands/led1            | [kobuki_msgs/Led]                 |
+| /mobile_base/commands/led2            | [kobuki_msgs/Led]                 |
+| /kobuki_safety_controller/enable      | [std_msgs/Empty]                  |
+| /mobile_base/commands/motor_power     | [kobuki_msgs/MotorPower]          |
+| /mobile_base/events/cliff             | [kobuki_msgs/CliffEvent]          |
+| /keyop_vel_smoother/raw_cmd_vel       | [geometry_msgs/Twist]             |
+| /mobile_base_nodelet_manager/bond     | [bond/Status]                     |
+| /kobuki_safety_controller/reset       | [std_msgs/Empty]                  |
+| /mobile_base/commands/controller_info | [kobuki_msgs/ControllerInfo]      |
