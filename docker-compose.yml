@@ -1,34 +1,28 @@
 version: "3"
 
 services:
-  ros1:
+  master:
     build:
-      context: ros1
+      context: master
       dockerfile: Dockerfile
+    environment:
+      - "REDIS_URL=${REDIS_URL}"
+      - "REDIS_PORT=${REDIS_PORT}"
     ports:
-      - "11311:11311/tcp"
-    networks:
-      - my_network
-
-  ros2:
-    build:
-      context: ros2
-      dockerfile: Dockerfile
-    networks:
-      - my_network
-    environment:
-      - "ROS_HOSTNAME=bridge"
-      - "ROS_MASTER_URI=http://ros1:11311"
-
-  bridge:
-    image: ros:foxy-ros1-bridge
-    environment:
-      - "ROS_HOSTNAME=bridge"
-      - "ROS_MASTER_URI=http://ros1:11311"
-    networks:
-      - my_network
-    command: ros2 run ros1_bridge dynamic_bridge
-
-networks:
-  my_network:
-    driver: bridge
+      - "${REDIS_PORT}:${REDIS_PORT}"
+  # # For simulated version
+  #   depends_on:
+  #     - robot
+  # robot:
+  #   build:
+  #     context: robot
+  #     dockerfile: Dockerfile
+  #   environment:
+  #     - "REDIS_URL=${REDIS_URL}"
+  #     - "REDIS_PORT=${REDIS_PORT}"
+  #   depends_on:
+  #     - redis
+  # redis:
+  #   image: "redis"
+  #   environment:
+  #     - ALLOW_EMPTY_PASSWORD=yes

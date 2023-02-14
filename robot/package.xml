@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>py_srvcli</name>
+  <name>pub_sub_testing</name>
   <version>0.0.0</version>
-  <description>The py_srvcli package</description>
+  <description>The pub_sub_testing package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
