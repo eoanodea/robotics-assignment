@@ -1,6 +1,62 @@
-# Robotics Assignment
+# 🤖 Robotics Assignment
 
-A Docker stack containing `ROS1`, `ROS2` and a `Bridge` container, which can connect, communicate and control a [TURTLEBOT 2](http://kobuki.yujinrobot.com/about2), over a local WiFi network.
+## ✏️ Description
+
+The aim of this project is to communicate and control a [TURTLEBOT 2](http://kobuki.yujinrobot.com/about2) over a local WiFi network. There are two parts to this project, the physical part where we utilise the Turtlebot, by using `Kobuki Node` in `ROS1`. The simulated part uses the same code but along with Gazebo Garden.
+
+A Docker stack contains the following:
+
+1. `master` - recieves perceptions from either a physical robot or a simulated one (`robot`), uses logic to generate commands and sends them back over a redis channel
+2. `robot` - a ROS1 package used on the robot to recieve topics from Kobuki Node, and converts them and sends them over a Redis channel. (`robot` can also be used in simulated mode over Docker)
+3. `redis` - used as the Redis server in the simulated version only, in the physical version, the robot has a redis server running on it.
+
+## 🤔 How to run this code (V2)
+
+> Make sure you have [docker & docker-compose](https://docs.docker.com/get-docker/) installed
+
+**☁️ Simulated Version** <br/>
+
+1. Check the `.env` file contains the right value (Should be `redis` for the simulated redis environment)
+
+2. Uncomment everything below `# # For simulated version` in the `docker-compose.yml` file.
+
+3. Run the master from your computer `docker-compose up` (Might take a little while on the first run)
+
+**🤖 Physical Version** <br />
+
+1. Check the `.env` file contains the right value (Should be `192.168.0.107` for the robot)
+
+2. Copy over the files (From your local machine):
+   `rsync -av ./robot/* ubuntu@192.168.0.107:/home/ubuntu/catkin_make_ws/src/pub_sub_testing`
+
+3. Run the setup script (From the robot):
+   `bash /home/ubuntu/catkin_ws/src/pub_sub_testing/init.sh`
+
+4. Open up four shells in the robot and run the following:
+
+   - `roslaunch kobuki_node minimal.launch --screen`
+   - `roslaunch kobuki_keyop safe_keyop.launch --screen`
+   - `roslaunch astra_launch astra.launch`
+   - `roslaunch pub_sub_testing pub_sub_testing.launch`
+
+5. Run the master from your computer `docker-compose up` (Might take a little while on the first run)
+
+## Troubleshooting
+
+If you want to shell into a particular container for debugging purposes, you can run the following command:
+
+`docker exec -it [container-name] bash`
+
+E.g.
+
+`docker exec -it robotics-assignment-ros1-1 bash`
+
+If you want to test messages going from `ROS1` through the system and back, you can run (From `ROS1` container **OR** Robot)
+`rostopic pub /debug/percept std_msgs/String "Hello"`
+
+## 🏗️ Architecture (🚨 OUTDATED)
+
+> This section is from our first iteration of the project (which we had to scrap most of it due to old operating systems)
 
 ```mermaid
 graph LR
@@ -87,110 +143,76 @@ stateDiagram-v2
 
 > State Diagram
 
-## How to run
-
-Make sure you have [docker & docker-compose](https://docs.docker.com/get-docker/) installed
-
-Run `docker-compose up` (might take a while on your first run, my last fresh install took me 50 minutes 🙃)
-
-Three containers should be created within a stack, with the following names:
-
-- `assignment-ros1-1`
-- `assignment-ros2-1`
-- `assignment-bridge-1`
-
-## Troubleshooting
-
-If you want to shell into a particular container for debugging purposes, you can run the following command:
-
-`docker exec -it [container-name] bash`
-
-E.g.
-
-`docker exec -it assignment-ros1-1 bash`
-
-You may run into an issue where you cannot access the ROS CLI. In that case you should source the setup file
-
-In ROS2: `source install/setup.bash`
-
-In ROS1: `source devel/setup.bash`
-
-(You shouldn't have to do this in the ROS1 container)
-
-## Controlling the Robot via SSH
-
-First shell:
-
-`roslaunch kobuki_node minimal.launch --screen`
-
-Second shell:
-
-`roslaunch kobuki_keyop safe_keyop.launch --screen`
-
-Third shell:
-
-`roslaunch astra_launch astra.launch`
-
-Fourth shell:
-
-`rqt_image_view`
-
-Fifth shell (just for debugging):
-`roslaunch pub_sub_testing pub_sub_testing.launch`
-
-# Notes
-
-Ros1 is a listener on another topic for only the robot is subscribed to
-
-Topic on the robot to listen for controls made by a controller
-
-## Available Topics (On Kobuki Node)
+## 📄 Available Topics (On Kobuki Node)
 
 The following topics are available when running Kobuki Node:
 
 ### Published topics:
 
-```
- * /mobile_base/events/robot_state [kobuki_msgs/RobotStateEvent] 1 publisher
- * /mobile_base/debug/raw_data_stream [std_msgs/String] 1 publisher
- * /tf [tf2_msgs/TFMessage] 1 publisher
- * /odom [nav_msgs/Odometry] 1 publisher
- * /mobile_base/sensors/core [kobuki_msgs/SensorState] 1 publisher
- * /mobile_base/events/button [kobuki_msgs/ButtonEvent] 1 publisher
- * /mobile_base/events/power_system [kobuki_msgs/PowerSystemEvent] 1 publisher
- * /diagnostics [diagnostic_msgs/DiagnosticArray] 1 publisher
- * /mobile_base/events/digital_input [kobuki_msgs/DigitalInputEvent] 1 publisher
- * /mobile_base/events/wheel_drop [kobuki_msgs/WheelDropEvent] 1 publisher
- * /mobile_base/debug/raw_control_command [std_msgs/Int16MultiArray] 1 publisher
- * /joint_states [sensor_msgs/JointState] 1 publisher
- * /rosout [rosgraph_msgs/Log] 3 publishers
- * /mobile_base/debug/raw_data_command [std_msgs/String] 1 publisher
- * /mobile_base/sensors/imu_data_raw [sensor_msgs/Imu] 1 publisher
- * /mobile_base/sensors/dock_ir [kobuki_msgs/DockInfraRed] 1 publisher
- * /rosout_agg [rosgraph_msgs/Log] 1 publisher
- * /mobile_base/events/bumper [kobuki_msgs/BumperEvent] 1 publisher
- * /diagnostics_toplevel_state [diagnostic_msgs/DiagnosticStatus] 1 publisher
- * /mobile_base/controller_info [kobuki_msgs/ControllerInfo] 1 publisher
- * /mobile_base/events/cliff [kobuki_msgs/CliffEvent] 1 publisher
- * /mobile_base/sensors/imu_data [sensor_msgs/Imu] 1 publisher
- * /mobile_base_nodelet_manager/bond [bond/Status] 2 publishers
- * /mobile_base/version_info [kobuki_msgs/VersionInfo] 1 publisher
- * /diagnostics_agg [diagnostic_msgs/DiagnosticArray] 1 publisher
-```
+| Topic Name                                         | Message Type                          | Number of Publishers |
+| -------------------------------------------------- | ------------------------------------- | -------------------- |
+| /camera/depth/image                                | sensor_msgs/Image                     | 1                    |
+| /camera/depth_registered/sw_registered/image_rect  | sensor_msgs/Image                     | 1                    |
+| /camera/depth_registered/points                    | sensor_msgs/PointCloud2               | 1                    |
+| /cmd_vel_mux/parameter_descriptions                | dynamic_reconfigure/ConfigDescription | 1                    |
+| /mobile_base/events/robot_state                    | kobuki_msgs/RobotStateEvent           | 1                    |
+| /mobile_base/debug/raw_data_stream                 | std_msgs/String                       | 1                    |
+| /tf                                                | tf2_msgs/TFMessage                    | 5                    |
+| /odom                                              | nav_msgs/Odometry                     | 1                    |
+| /mobile_base/sensors/core                          | kobuki_msgs/SensorState               | 1                    |
+| /camera/rgb_rectify_color/parameter_updates        | dynamic_reconfigure/Config            | 1                    |
+| /cmd_vel_mux/parameter_updates                     | dynamic_reconfigure/Config            | 1                    |
+| /keyop_vel_smoother/parameter_updates              | dynamic_reconfigure/Config            | 1                    |
+| /mobile_base/events/button                         | kobuki_msgs/ButtonEvent               | 1                    |
+| /camera/depth_rectify_depth/parameter_descriptions | dynamic_reconfigure/ConfigDescription | 1                    |
+| /camera/depth_registered/sw_registered/camera_info | sensor_msgs/CameraInfo                | 1                    |
+| /mobile_base/events/power_system                   | kobuki_msgs/PowerSystemEvent          | 1                    |
+| /camera/depth_rectify_depth/parameter_updates      | dynamic_reconfigure/Config            | 1                    |
+| /cmd_vel_mux/active                                | std_msgs/String                       | 1                    |
+| /diagnostics                                       | diagnostic_msgs/DiagnosticArray       | 1                    |
+| /mobile_base/events/digital_input                  | kobuki_msgs/DigitalInputEvent         | 1                    |
+| /cmd_vel_mux/safety_controller                     | geometry_msgs/Twist                   | 1                    |
+| /mobile_base/events/wheel_drop                     | kobuki_msgs/WheelDropEvent            | 1                    |
+| /keyop_vel_smoother/parameter_descriptions         | dynamic_reconfigure/ConfigDescription | 1                    |
+| /mobile_base/debug/raw_control_command             | std_msgs/Int16MultiArray              | 1                    |
+| /joint_states                                      | sensor_msgs/JointState                | 1                    |
+| /rosout                                            | rosgraph_msgs/Log                     | 20                   |
+| /mobile_base/debug/raw_data_command                | std_msgs/String                       | 1                    |
+| /mobile_base/sensors/imu_data_raw                  | sensor_msgs/Imu                       | 1                    |
+| /mobile_base/sensors/dock_ir                       | kobuki_msgs/DockInfraRed              | 1                    |
+| /rosout_agg                                        | rosgraph_msgs/Log                     | 1                    |
+| /mobile_base/events/bumper                         | kobuki_msgs/BumperEvent               | 1                    |
+| /cmd_vel_mux/keyboard_teleop                       | geometry_msgs/Twist                   | 1                    |
+| /mobile_base/commands/velocity                     | geometry_msgs/Twist                   | 1                    |
+| /diagnostics_toplevel_state                        | diagnostic_msgs/DiagnosticStatus      | 1                    |
+| /mobile_base/controller_info                       | kobuki_msgs/ControllerInfo            | 1                    |
 
 ### Subscribed topics:
 
-```
- * /mobile_base/commands/motor_power [kobuki_msgs/MotorPower] 1 subscriber
- * /mobile_base/commands/external_power [kobuki_msgs/ExternalPower] 1 subscriber
- * /mobile_base/commands/reset_odometry [std_msgs/Empty] 1 subscriber
- * /rosout [rosgraph_msgs/Log] 1 subscriber
- * /mobile_base/commands/sound [kobuki_msgs/Sound] 1 subscriber
- * /mobile_base_nodelet_manager/bond [bond/Status] 2 subscribers
- * /diagnostics [diagnostic_msgs/DiagnosticArray] 1 subscriber
- * /mobile_base/commands/digital_output [kobuki_msgs/DigitalOutput] 1 subscriber
- * /mobile_base/commands/velocity [geometry_msgs/Twist] 1 subscriber
- * /mobile_base/commands/led1 [kobuki_msgs/Led] 1 subscriber
- * /mobile_base/commands/led2 [kobuki_msgs/Led] 1 subscriber
- * /mobile_base/commands/controller_info [kobuki_msgs/ControllerInfo] 1 subscriber
-```
+| Topic                                 | Message Type                    | Number of Subscribers |
+| ------------------------------------- | ------------------------------- | --------------------- |
+| /tf                                   | tf2_msgs/TFMessage              | 1                     |
+| /odom                                 | nav_msgs/Odometry               | 1                     |
+| /mobile_base/commands/reset_odometry  | std_msgs/Empty                  | 1                     |
+| /tf_static                            | tf2_msgs/TFMessage              | 1                     |
+| /diagnostics                          | diagnostic_msgs/DiagnosticArray | 1                     |
+| /cmd_vel_mux/safety_controller        | geometry_msgs/Twist             | 1                     |
+| /mobile_base/events/wheel_drop        | kobuki_msgs/WheelDropEvent      | 1                     |
+| /mobile_base/commands/external_power  | kobuki_msgs/ExternalPower       | 1                     |
+| /rosout                               | rosgraph_msgs/Log               | 1                     |
+| /keyop/teleop                         | kobuki_msgs/KeyboardInput       | 1                     |
+| /kobuki_safety_controller/disable     | std_msgs/Empty                  | 1                     |
+| /mobile_base/commands/sound           | kobuki_msgs/Sound               | 1                     |
+| /mobile_base/events/bumper            | kobuki_msgs/BumperEvent         | 1                     |
+| /cmd_vel_mux/keyboard_teleop          | geometry_msgs/Twist             | 1                     |
+| /mobile_base/commands/digital_output  | kobuki_msgs/DigitalOutput       | 1                     |
+| /mobile_base/commands/velocity        | geometry_msgs/Twist             | 1                     |
+| /mobile_base/commands/led1            | kobuki_msgs/Led                 | 1                     |
+| /mobile_base/commands/led2            | kobuki_msgs/Led                 | 1                     |
+| /kobuki_safety_controller/enable      | std_msgs/Empty                  | 1                     |
+| /mobile_base/commands/motor_power     | kobuki_msgs/MotorPower          | 1                     |
+| /mobile_base/events/cliff             | kobuki_msgs/CliffEvent          | 1                     |
+| /keyop_vel_smoother/raw_cmd_vel       | geometry_msgs/Twist             | 1                     |
+| /mobile_base_nodelet_manager/bond     | bond/Status                     | 5                     |
+| /kobuki_safety_controller/reset       | std_msgs/Empty                  | 1                     |
+| /mobile_base/commands/controller_info | kobuki_msgs/ControllerInfo      | 1                     |
