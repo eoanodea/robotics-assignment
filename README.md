@@ -41,7 +41,7 @@ A Docker stack contains the following:
 
 5. Run the master from your computer `docker-compose up` (Might take a little while on the first run)
 
-## Troubleshooting
+## 🪲 Troubleshooting
 
 If you want to shell into a particular container for debugging purposes, you can run the following command:
 
@@ -147,7 +147,7 @@ stateDiagram-v2
 
 The following topics are available when running Kobuki Node:
 
-### Published topics:
+### 📣 Published topics:
 
 | Topic Name                                         | Message Type                          | Number of Publishers |
 | -------------------------------------------------- | ------------------------------------- | -------------------- |
@@ -187,7 +187,7 @@ The following topics are available when running Kobuki Node:
 | /diagnostics_toplevel_state                        | diagnostic_msgs/DiagnosticStatus      | 1                    |
 | /mobile_base/controller_info                       | kobuki_msgs/ControllerInfo            | 1                    |
 
-### Subscribed topics:
+### 📡 Subscribed topics:
 
 | Topic                                 | Message Type                    | Number of Subscribers |
 | ------------------------------------- | ------------------------------- | --------------------- |
