@@ -10,18 +10,19 @@ services:
       - "REDIS_PORT=${REDIS_PORT}"
     ports:
       - "${REDIS_PORT}:${REDIS_PORT}"
-    depends_on:
-      - robot
-  robot:
-    build:
-      context: robot
-      dockerfile: Dockerfile
-    environment:
-      - "REDIS_URL=${REDIS_URL}"
-      - "REDIS_PORT=${REDIS_PORT}"
-    depends_on:
-      - redis
-  redis:
-    image: "redis"
-    environment:
-      - ALLOW_EMPTY_PASSWORD=yes
+  # # For simulated version
+  #   depends_on:
+  #     - robot
+  # robot:
+  #   build:
+  #     context: robot
+  #     dockerfile: Dockerfile
+  #   environment:
+  #     - "REDIS_URL=${REDIS_URL}"
+  #     - "REDIS_PORT=${REDIS_PORT}"
+  #   depends_on:
+  #     - redis
+  # redis:
+  #   image: "redis"
+  #   environment:
+  #     - ALLOW_EMPTY_PASSWORD=yes

@@ -49,8 +49,11 @@ if __name__ == '__main__':
         pass
 
 
+# echo export REDIS_URL=localhost >> ~/.bashrc
+# echo export REDIS_PORT=6379 >> ~/.bashrc
 # scp ./robot/src/* ubuntu@192.168.0.107:/home/ubuntu/catkin_ws/src/pub_sub_testing/src/
 # cd ~/catkin_ws
 # source devel/setup.bash
 # chmod +x listener.py
+# catkin_make
 # roslaunch pub_sub_testing pub_sub_testing.launch
