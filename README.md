@@ -2,7 +2,7 @@
 
 ## ✏️ Description
 
-The aim of this project is to communicate and control a [TURTLEBOT 2](http://kobuki.yujinrobot.com/about2) over a local WiFi network. There are two parts to this project, the physical part where we utilise the Turtlebot, by using `Kobuki Node` in `ROS1`. The simulated part uses the same code but along with Gazebo Garden.
+The aim of this project is to communicate and control a [TURTLEBOT 2](http://kobuki.yujinrobot.com/about2) over a local WiFi network. There are two parts to this project, the physical part where we utilise the Turtlebot, by using [Kobuki Node](http://wiki.ros.org/kobuki_node) in [ROS1](https://www.ros.org/). The simulated part uses the same code but along with [Gazebo Garden](https://gazebosim.org/home).
 
 A Docker stack contains the following:
 
