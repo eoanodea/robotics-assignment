@@ -16,22 +16,22 @@ A Docker stack contains the following:
 
 **☁️ Simulated Version** <br/>
 
-1. Check the `.env` file contains the right value (Should be `redis` for the simulated redis environment)
+1. Check the `REDIS_URL` in the `.env` file (Should be `redis` for the simulated redis environment)
 
 2. Uncomment everything below `# # For simulated version` in the `docker-compose.yml` file.
 
-3. Navigate to `robot/src/listener.py` and change `#!/usr/bin/env python` to `#!/usr/bin/env python3`
+3. Navigate to `robot/src/listener.py` and change `#!/usr/bin/env python` to `#!/usr/bin/env python3` (Very first line of the file)
 
 4. Run the master from your computer `docker-compose up` (Might take a little while on the first run)
 
 **🤖 Physical Version** <br />
 
-1. Check the `.env` file contains the right value (Should be `192.168.0.107` for the robot)
+1. Check the `REDIS_URL` in the `.env` file (Should be `192.168.0.107` for the robot)
 
 2. Copy over the files (From your local machine):
    `rsync -av ./robot/* ubuntu@192.168.0.107:/home/ubuntu/catkin_make_ws/src/pub_sub_testing`
 
-3. Run the setup script (From the robot):
+3. SSH into the robot and run the setup script (From the robot):
    `cd /home/ubuntu/catkin_make_ws/src/pub_sub_testing && bash init.sh`
 
 4. Open up four shells in the robot and run the following:
