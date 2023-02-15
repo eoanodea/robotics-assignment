@@ -1,6 +1,7 @@
 import time
 import os
 
+
 from VirtualBody import VirtualBody
 
 # MY_PERC_CH = "/mobile_base/events/bumper"  # from the physical body to the virtual body and controller
