@@ -31,8 +31,16 @@ class VirtualBody():
         while True:
             msg = self._pub_sub.get_message()
             if msg:
-                # self._my_perceptions = json.loads(msg['data'])
-                self._my_perceptions = msg['data']
+                self._my_perceptions = json.loads(msg['data'])
+                if self._my_perceptions['type'] == 'image':
+                    print('getting image')
+                    # @TODO TypeError: the JSON object must be str, bytes or bytearray, not NoneType
+                    image = self._my_msg_broker.hget(self._my_perceptions['hashset'], self._my_perceptions['ID'])
+                    parsed_image = json.loads(image)
+                    print('got image')
+                    print(parsed_image['width'])
+                    self._my_msg_broker.hdel(self._my_perceptions['hashset'], self._my_perceptions['ID'])
+                    # self._my_perceptions = msg['data']
                 return self._my_perceptions
             time.sleep(0.1)
 
