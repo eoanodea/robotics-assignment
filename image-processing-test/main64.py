@@ -1,7 +1,7 @@
 import cv2
 import base64
 import torch
-from tracker import *
+from yolov5tracker.tracker import *
 import numpy as np
 
 path = r"E:\yolov5\yolov5"
@@ -77,6 +77,7 @@ for box_id in boxes_ids:
         result1a = cv2.pointPolygonTest(np.array(area_1a, np.int32), (int(xTrack), int(yTrack)), False)
         result2b = cv2.pointPolygonTest(np.array(area_2b, np.int32), (int(xTrack), int(yTrack)), False)
         result1b = cv2.pointPolygonTest(np.array(area_1b, np.int32), (int(xTrack), int(yTrack)), False)
+
         if result1a == 1:
             result = 'BIG LEFT'
         elif result2a == 1:
