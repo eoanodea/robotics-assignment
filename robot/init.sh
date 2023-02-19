@@ -29,6 +29,7 @@ source ~/catkin_ws/devel/setup.bash
 
 
 echo "Building ~/catkin_make_ws workspace"
+cd ~/catkin_make_ws/src/pub_sub_testing/src && dos2unix listener.py
 cd ~/catkin_make_ws && catkin_make
 source ~/catkin_make_ws/devel/setup.bash
 
