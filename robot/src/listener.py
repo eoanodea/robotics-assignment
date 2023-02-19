@@ -4,6 +4,7 @@ import rospy
 import redis
 import os
 import base64
+import json
 import numpy as np
 
 from std_msgs.msg import String
@@ -15,28 +16,44 @@ REDIS_PORT = os.environ['REDIS_PORT']
 PERCEPT_CHANNEL = os.environ['PERCEPT_CHANNEL']
 COMMAND_CHANNEL = os.environ['COMMAND_CHANNEL']
 
-  
+REDIS_IMAGE_ID = 1
+REDIS_HASHSET_NAME = "Image"
+
+
 def callback_str(data):
     rospy.loginfo("String from ros1 %s", (data.data))
     R.publish(PERCEPT_CHANNEL, data.data)
 
+
 def callback_image(image_data):
+    global REDIS_IMAGE_ID
     rospy.loginfo("Image data from ROS1")
-    # Convert the data array to a numpy array of uint8 values
-    data_array = np.array(image_data.data, dtype=np.uint8)
+    data_bytes = bytes(image_data.data)
+    base64Image = base64.b64encode(data_bytes)
 
-    # Assume the image data is stored in a dictionary variable called 'image_data'
-    # Convert the 'data' field to a bytes object
-    image_bytes = bytes(data_array)
+    hash_data = {
+        'width': image_data.width,
+        'height': image_data.height,
+        'data': base64Image
+    }
 
-    # Encode the image bytes as base64
-    base64_image = base64.b64encode(image_bytes)
+    json_hash_data = json.dumps(hash_data, indent=4)
+    print('hset')
+    R.hset(REDIS_HASHSET_NAME, REDIS_IMAGE_ID, json_hash_data)
 
-    # Print the base64 string
-    print(base64_image.decode('utf-8'))
+    published_data = {
+        'ID': REDIS_IMAGE_ID,
+        'type': 'image',
+        'hashset': REDIS_HASHSET_NAME
+    }
 
-    R.publish(PERCEPT_CHANNEL, base64_image.decode('utf-8'))
-  
+    json_published_data = json.dumps(published_data, indent=4)
+
+    R.publish(PERCEPT_CHANNEL, json_published_data)
+
+    REDIS_IMAGE_ID += 1
+
+
 def main():
     global R
     R = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, decode_responses=True)
@@ -44,7 +61,6 @@ def main():
     rospub = rospy.Publisher('/debug/command', String, queue_size=10)
     rospy.init_node('robot_listener', anonymous=True)
     rospy.Subscriber("/debug/percept", String, callback_str)
-
 
     rospy.Subscriber("/camera/depth/image_raw", Image, callback_image)
 
@@ -55,15 +71,14 @@ def main():
         print("Command recieved", msg)
         if msg is not None and isinstance(msg, dict):
             rospub.publish(msg.get('data'))
-    
-    
+
     # spin() simply keeps python from
     # exiting until this node is stopped
     rospy.spin()
-    
-  
+
+
 if __name__ == '__main__':
-      
+
     # you could name this function
     try:
         main()
