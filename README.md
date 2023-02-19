@@ -32,7 +32,7 @@ A Docker stack contains the following:
    `rsync -av ./robot/* ubuntu@192.168.0.107:/home/ubuntu/catkin_make_ws/src/pub_sub_testing`
 
 3. SSH into the robot and run the setup script (From the robot):
-   - (Windows): 'cd /home/ubuntu/catkin_make_ws/src/pub_sub_testing && dos2unix init.sh && bash init.sh'
+   - (Windows): `cd /home/ubuntu/catkin_make_ws/src/pub_sub_testing && dos2unix init.sh && bash init.sh`
    - (Mac & Linux): `cd /home/ubuntu/catkin_make_ws/src/pub_sub_testing && bash init.sh`
 
 4. Open up four shells in the robot and run the following:
