@@ -12,7 +12,7 @@ cap=cv2.VideoCapture(0)
 def POINTS(event, x, y, flags, param):
     if event == cv2.EVENT_MOUSEMOVE :  
         colorsBGR = [x, y]
-        print(colorsBGR)
+        #print(colorsBGR)
         
 
 cv2.namedWindow('FRAME')
@@ -66,16 +66,16 @@ while True:
             result2b=cv2.pointPolygonTest(np.array(area_2b, np.int32), (int(xTrack), int(yTrack)), False)
             result1b=cv2.pointPolygonTest(np.array(area_1b,np.int32),(int(xTrack),int(yTrack)),False)
             if result1a==1:
-                result='BIG LEFT'
+                result='HARD LEFT'
             elif result2a==1:
-                result='BIG RIGHT'
+                result='HARD RIGHT'
             elif result1b==1:
-                result='left'
+                result='turn left'
             elif result2b==1:
-                result='right'
+                result='turn right'
             else:
                 result='center'
-            # print(result)
+            print(result)
         elif id==sortId[1]:
             cv2.putText(frame, str('NEXT'), (x, y + 30), cv2.FONT_HERSHEY_DUPLEX, 1.2, (250, 241, 72), 2)
         else:
