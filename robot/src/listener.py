@@ -10,6 +10,7 @@ import numpy as np
 from std_msgs.msg import String
 from kobuki_msgs.msg import BumperEvent
 from sensor_msgs.msg import Image
+from geometry_msgs.msg import Twist
 
 REDIS_HOST = os.environ['REDIS_URL']
 REDIS_PORT = os.environ['REDIS_PORT']
@@ -56,7 +57,11 @@ def main():
     global R
     R = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, decode_responses=True)
 
-    rospub = rospy.Publisher('/debug/command', String, queue_size=10)
+    #rospub = rospy.Publisher('/debug/command', String, queue_size=10)
+    rospub = rospy.Publisher('/mobile_base/commands/velocity', Twist, queue_size=10)
+    move_cmd = Twist()
+
+
     rospy.init_node('robot_listener', anonymous=True)
     rospy.Subscriber("/debug/percept", String, callback_str)
 
@@ -68,7 +73,23 @@ def main():
     for msg in pubsub.listen():
         print("Command recieved", msg)
         if msg is not None and isinstance(msg, dict):
-            rospub.publish(msg.get('data'))
+            #rospub.publish(msg.get('data'))
+
+            #+ = left, - = right
+            reccom = msg.get('data')
+            if reccom == 'center':
+                move_cmd = Twist()
+            elif reccom == 'hard right':
+                move_cmd.angular.z = -0.5
+            elif reccom == 'hard left':
+                move_cmd.angular.z = 0.5
+            elif reccom == 'right':
+                move_cmd.angular.z = -0.3
+            elif reccom == 'left':
+                move_cmd.angular.z = 0.3
+            else:
+                move_cmd = Twist()
+            rospub.publish(move_cmd)
 
     # spin() simply keeps python from
     # exiting until this node is stopped

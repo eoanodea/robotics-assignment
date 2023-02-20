@@ -6,7 +6,7 @@ import json
 class VirtualBody():
 
     def __init__(self, perception_channel, commands_channel, redis_host, redis_port):
-        print("Initilizing")
+        print("Initializing")
         self._my_perc_ch = perception_channel
         self._my_comm_ch = commands_channel
         # self._my_msg_broker = redis.from_url(redis_host, decode_responses=True)
@@ -45,8 +45,9 @@ class VirtualBody():
             time.sleep(0.1)
 
     def plan(self, perceptions):
-        # Some logic based on the perception 
-        return 'forward'
+        # Some logic based on the perception
+        cmd = 'right'
+        return cmd
 
     def send_command(self, command):
         # send the command to redis

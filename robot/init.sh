@@ -14,7 +14,7 @@ echo 'Generated from ~/catkin_make_ws/src/pub_sub_testing/init.sh\n'
 echo export REDIS_URL=localhost >> ~/.bashrc
 echo export REDIS_PORT=6379 >> ~/.bashrc
 echo export PERCEPT_CHANNEL=/debug/percept >> ~/.bashrc
-echo export COMMAND_CHANNEL=/debug/command >> ~/.bashrc
+echo export COMMAND_CHANNEL=/mobile_base/commands/velocity >> ~/.bashrc
 
 source ~/.bashrc
 

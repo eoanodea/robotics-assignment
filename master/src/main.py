@@ -6,7 +6,8 @@ from VirtualBody import VirtualBody
 
 # MY_PERC_CH = "/mobile_base/events/bumper"  # from the physical body to the virtual body and controller
 MY_PERC_CH = "/debug/percept"  # from the physical body to the virtual body and controller
-MY_COMM_CH = "/debug/command"     # from virtual body to physical
+MY_COMM_CH = "/mobile_base/commands/velocity"     # from virtual body to physical
+
 
 REDIS_HOST = os.environ['REDIS_URL']
 REDIS_PORT = os.environ['REDIS_PORT']
