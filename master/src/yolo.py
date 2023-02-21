@@ -6,9 +6,6 @@ import numpy as np
 
 path = r"/usr/src/app/yolov5"
 
-# Example base64 encoded image data
-base64_data = ""
-
 class ImageTracker:
 
     def __init__(self):

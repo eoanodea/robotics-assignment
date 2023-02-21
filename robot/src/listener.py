@@ -5,6 +5,7 @@ import redis
 import os
 import base64
 import json
+import time
 import numpy as np
 
 from std_msgs.msg import String
@@ -24,6 +25,18 @@ def callback_str(data):
     rospy.loginfo("String from ros1 %s", (data.data))
     R.publish(PERCEPT_CHANNEL, data.data)
 
+# Any images older than 30 seconds 
+# in the hash set is removed
+def cleanup():
+    for key in R.hkeys(REDIS_HASHSET_NAME):
+        value = R.hget(REDIS_HASHSET_NAME, key)
+        hash_data = eval(value)
+        timestamp = hash_data.get('timestamp', 0)
+        current_time = time.time()
+        
+        if current_time - timestamp >= 30:
+            print("[CLEANUP] - Removing old image with ID" , key)
+            R.hdel(REDIS_HASHSET_NAME, key)
 
 def callback_image(image_data):
     global REDIS_IMAGE_ID
@@ -34,11 +47,12 @@ def callback_image(image_data):
     hash_data = {
         'width': image_data.width,
         'height': image_data.height,
-        'data': base64Image
+        'data': base64Image,
+        'timestamp': time.time()
     }
 
     json_hash_data = json.dumps(hash_data, indent = 4) 
-    print('hset')
+
     R.hset(REDIS_HASHSET_NAME, REDIS_IMAGE_ID, json_hash_data)
     
     published_data = {
@@ -52,6 +66,7 @@ def callback_image(image_data):
     R.publish(PERCEPT_CHANNEL, json_published_data)
     
     REDIS_IMAGE_ID = REDIS_IMAGE_ID + 1
+    cleanup()
   
 def main():
     global R
