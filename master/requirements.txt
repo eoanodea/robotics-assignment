@@ -1,1 +1,4 @@
 redis
+opencv-python
+numpy
+torch

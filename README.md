@@ -32,6 +32,7 @@ A Docker stack contains the following:
    `rsync -av ./robot/* ubuntu@192.168.0.107:/home/ubuntu/catkin_make_ws/src/pub_sub_testing`
 
 3. SSH into the robot and run the setup script (From the robot):
+
    - (Windows): `cd /home/ubuntu/catkin_make_ws/src/pub_sub_testing && dos2unix init.sh && bash init.sh`
    - (Mac & Linux): `cd /home/ubuntu/catkin_make_ws/src/pub_sub_testing && bash init.sh`
 
@@ -56,6 +57,18 @@ E.g.
 
 If you want to test messages going from `ROS1` through the system and back, you can run (From `ROS1` container **OR** Robot)
 `rostopic pub /debug/percept std_msgs/String "Hello"`
+
+If you want to test a simulated image transfer & processing, spin up the workspace in _Simulated Mode_, and shell into the master:
+
+`docker exec -it robotics-assignment-master-1 bash`
+
+Navigate to the `src` folder and run the `image-test.py` file
+
+`cd src && python image-test.py`
+
+This will send an image over a Redis HSet, exactly how the physical version would.
+
+``
 
 ## 🏗️ Architecture (🚨 OUTDATED)
 

@@ -1,91 +1,85 @@
 import cv2
+import base64
 import torch
-from tracker import *
+from tracker import Tracker
 import numpy as np
-path = r"E:\yolov5\yolov5"
-model = torch.hub.load(path, 'yolov5n', pretrained=True, source='local')
-model.classes = 0;
 
-cap=cv2.VideoCapture(0)
-result = 0
+path = r"/usr/src/app/yolov5"
 
+# Example base64 encoded image data
+base64_data = ""
 
-def POINTS(event, x, y, flags, param):
-    if event == cv2.EVENT_MOUSEMOVE :
-        colorsBGR = [x, y]
-        #print(colorsBGR)
+class ImageTracker:
 
-cv2.namedWindow('FRAME')
-cv2.setMouseCallback('FRAME', POINTS)
+    def __init__(self):
+        self._model = torch.hub.load(path, 'yolov5n', pretrained=True, source='local')
+        self._model.classes = 0
 
+        self._area_1a = [(0, 0), (200, 0), (200, 640), (0, 640)]
+        self._area_1b = [(200, 0), (400, 0), (400, 640), (200, 640)]
+        self._area_2a = [(760, 0), (960, 0), (960, 640), (760, 640)]
+        self._area_2b = [(560, 0), (760, 0), (760, 640), (560, 640)]
 
+        self._tracker = Tracker()
 
-tracker = Tracker()
+    def on_image(self, base64_image):
+        # Remove the data URI scheme from the base64 data
+        img_data = base64_image.split(",")[1]
+        # Decode the base64 image data and convert to a numpy array
+        img_bytes = base64.b64decode(img_data)
+        img_arr = np.frombuffer(img_bytes, dtype=np.uint8)
+        img = cv2.imdecode(img_arr, cv2.IMREAD_COLOR)
 
-area_1a=[(0,0),(200,0),(200,640),(0,640)]
-area_1b=[(200,0),(400,0),(400,640),(200,640)]
-area_2a=[(760,0),(960,0),(960,640),(760,640)]
-area_2b=[(560,0),(760,0),(760,640),(560,640)]
-while True:
-    ret,frame=cap.read()
-    #frame=cv2.resize(frame,(960,640))
-    #cv2.polylines(frame,[np.array(area_1a,np.int32)],True,(0,255,0),3)
-    #cv2.polylines(frame,[np.array(area_2a, np.int32)], True, (0, 255, 0), 3)
-    #cv2.polylines(frame,[np.array(area_1b,np.int32)],True,(0,0,255),3)
-    #cv2.polylines(frame,[np.array(area_2b, np.int32)], True, (0, 0, 255), 3)
-    results=model(frame)
-    #frame=np.squeeze(results.render())
-    list=[]
-    for index,row in results.pandas().xyxy[0].iterrows():
-        x1=int(row['xmin'])
-        y1=int(row['ymin'])
-        x2=int(row['xmax'])
-        y2=int(row['ymax'])
-        b=str(row['name'])
-        if 'person' in b:
-            list.append([x1, y1, x2, y2])
-        xcen=int((x1+x2)/2)
-        ycen=int((y1+y2)/2)
-        cv2.putText(frame,'+',(xcen,ycen),cv2.FONT_HERSHEY_DUPLEX,0.5,(186,226,65),1)
+        frame = img
 
-    boxes_ids=tracker.update(list)
-    ids=[]
-    for box_id in boxes_ids:
-        x, y, w, h, id = box_id
-        ids.append(id)
-    if ids:
-        sortId = sorted(ids)
-    for box_id in boxes_ids:
-        x,y,w,h,id=box_id
-        cv2.rectangle(frame, (x, y), (w, h), (51, 231, 247), 3)
-        if id==sortId[0]:
-            # print(id)
-            xTrack = int((x + w) / 2)
-            yTrack = int((y + h) / 2)
-            cv2.putText(frame, str('FOLLOWING'), (x, y + 30), cv2.FONT_HERSHEY_DUPLEX, 1.2, (64, 214, 119), 2)
-            result2a=cv2.pointPolygonTest(np.array(area_2a, np.int32), (int(xTrack), int(yTrack)), False)
-            result1a=cv2.pointPolygonTest(np.array(area_1a,np.int32),(int(xTrack),int(yTrack)),False)
-            result2b=cv2.pointPolygonTest(np.array(area_2b, np.int32), (int(xTrack), int(yTrack)), False)
-            result1b=cv2.pointPolygonTest(np.array(area_1b,np.int32),(int(xTrack),int(yTrack)),False)
-            # result: 0 - center, 1 - HARD LEFT, 2 - HARD RIGHT, 3 - turn left, 4 - turn right
-            if result1a == 1:
-                result = 'hard left'
-            elif result2a == 1:
-                result = 'hard right'
-            elif result1b == 1:
-                result = 'left'
-            elif result2b == 1:
-                result = 'right'
-            else:
-                result = 'center'
-        elif id==sortId[1]:
-            cv2.putText(frame, str('NEXT'), (x, y + 30), cv2.FONT_HERSHEY_DUPLEX, 1.2, (250, 241, 72), 2)
-        else:
-            cv2.putText(frame, str('NOT FOLLOWED'), (x, y + 30), cv2.FONT_HERSHEY_DUPLEX, 1.2, (250, 84, 72), 2)
-    cv2.imshow('FRAME',frame)
-    if cv2.waitKey(1)&0xFF==27:
-        break
-cap.release()
-cv2.destroyAllWindows()
+        # Process the frame here...
+        results = self._model(frame)
 
+        person_list = []
+        for index, row in results.pandas().xyxy[0].iterrows():
+            x1 = int(row['xmin'])
+            y1 = int(row['ymin'])
+            x2 = int(row['xmax'])
+            y2 = int(row['ymax'])
+            b = str(row['name'])
+            if 'person' in b:
+                person_list.append([x1, y1, x2, y2])
+            xcen = int((x1 + x2) / 2)
+            ycen = int((y1 + y2) / 2)
+            cv2.putText(frame, '+', (xcen, ycen), cv2.FONT_HERSHEY_DUPLEX, 0.5, (186, 226, 65), 1)
 
+        boxes_ids = self._tracker.update(person_list)
+        ids = []
+        for box_id in boxes_ids:
+            x, y, w, h, new_id = box_id
+            ids.append(new_id)
+        if ids:
+            sort_id = sorted(ids)
+        for box_id in boxes_ids:
+            x, y, w, h, new_id = box_id
+            cv2.rectangle(frame, (x, y), (w, h), (51, 231, 247), 3)
+            if new_id == sort_id[0]:
+                x_track = int((x + w) / 2)
+                y_track = int((y + h) / 2)
+                cv2.putText(frame, str('FOLLOWING'), (x, y + 30), cv2.FONT_HERSHEY_DUPLEX, 1.2, (64, 214, 119), 2)
+                result2a = cv2.pointPolygonTest(np.array(self._area_2a, np.int32), (int(x_track), int(y_track)), False)
+                result1a = cv2.pointPolygonTest(np.array(self._area_1a, np.int32), (int(x_track), int(y_track)), False)
+                result2b = cv2.pointPolygonTest(np.array(self._area_2b, np.int32), (int(x_track), int(y_track)), False)
+                result1b = cv2.pointPolygonTest(np.array(self._area_1b, np.int32), (int(x_track), int(y_track)), False)
+
+                # result: 0 - center,
+                # 1 - HARD LEFT,
+                # 2 - HARD RIGHT,
+                # 3 - turn left,
+                # 4 - turn right
+                result = 0
+                if result1a == 1:
+                    result = 1
+                elif result2a == 1:
+                    result = 2
+                elif result1b == 1:
+                    result = 3
+                elif result2b == 1:
+                    result = 4
+
+                return result

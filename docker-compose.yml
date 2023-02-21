@@ -10,7 +10,8 @@ services:
       - "REDIS_PORT=${REDIS_PORT}"
     ports:
       - "${REDIS_PORT}:${REDIS_PORT}"
-  # # For simulated version
+
+  #   # For simulated version
   #   depends_on:
   #     - robot
   # robot:
@@ -20,6 +21,8 @@ services:
   #   environment:
   #     - "REDIS_URL=${REDIS_URL}"
   #     - "REDIS_PORT=${REDIS_PORT}"
+  #     - "PERCEPT_CHANNEL=${PERCEPT_CHANNEL}"
+  #     - "COMMAND_CHANNEL=${COMMAND_CHANNEL}"
   #   depends_on:
   #     - redis
   # redis:

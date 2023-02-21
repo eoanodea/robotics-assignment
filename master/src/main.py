@@ -17,7 +17,7 @@ if __name__ == "__main__":
     my_virt_body = VirtualBody(MY_PERC_CH, MY_COMM_CH, REDIS_HOST, int(REDIS_PORT))
     while True:
         percepts = my_virt_body.get_perceptions()
-        print("perceptions: ", percepts)
+        print("perceptions: ")
         command = my_virt_body.plan(percepts)
         print("command: ", command)
         my_virt_body.send_command(command)
