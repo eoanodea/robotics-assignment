@@ -18,7 +18,7 @@ model.classes = 0
 #img = cv2.imdecode(img_arr, cv2.IMREAD_COLOR)
 
 #Example raw image data from robot
-f = open('rgb_image_rect.txt', 'r')
+f = open('rgbImage.txt', 'r')
 image_string = f.read()
 image_string=image_string.replace(',',' ')
 image_string=image_string.replace('[','')
@@ -48,10 +48,10 @@ area_2b = [(420, 0), (550, 0), (550, 480), (420, 480)]
 
 frame = image_array
 #frame=cv2.resize(frame,(640,480))
-cv2.polylines(frame,[np.array(area_1a,np.int32)],True,(0,0,255),3)
-cv2.polylines(frame,[np.array(area_2a, np.int32)], True, (0, 0, 255), 3)
-cv2.polylines(frame,[np.array(area_1b,np.int32)],True,(0,255,0),3)
-cv2.polylines(frame,[np.array(area_2b, np.int32)], True, (0, 255, 0), 3)
+#cv2.polylines(frame,[np.array(area_1a,np.int32)],True,(0,0,255),3)
+#cv2.polylines(frame,[np.array(area_2a, np.int32)], True, (0, 0, 255), 3)
+#cv2.polylines(frame,[np.array(area_1b,np.int32)],True,(0,255,0),3)
+#cv2.polylines(frame,[np.array(area_2b, np.int32)], True, (0, 255, 0), 3)
 
 # Process the frame here...
 results = model(frame)
