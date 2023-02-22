@@ -70,20 +70,37 @@ This will send an image over a Redis HSet, exactly how the physical version woul
 
 ``
 
-## 🏗️ Architecture (🚨 OUTDATED)
+## 🏗️ Architecture
 
-> This section is from our first iteration of the project (which we had to scrap most of it due to old operating systems)
+> This section contains a deployment diagram of the current system architecture between the Physical Robot and Docker
 
 ```mermaid
-graph LR
-    subgraph Robot
-        A[ROS1]
-    end
-    A[ROS1] <---> B[ROS1 Container]
-    subgraph Docker
-        B[ROS1] <---> |Bridge| D[ROS2]
-        D[ROS2] <---> E[Planner]
-    end
+stateDiagram-v2
+    ros_1_listener: ROS1
+    kobuki_node: Kobuki Node
+    channel: Channel
+    hash_set: Hash Set
+    virtual_body: Virtual Body
+    yolov5: YoloV5
+    tracker: Tracker
+
+
+    state Robot {
+        kobuki_node --> ros_1_listener
+        ros_1_listener -->  hash_set: base64 Image
+        ros_1_listener --> channel: Image ID
+        state Redis {
+            channel
+            hash_set
+        }
+    }
+    Robot --> Docker: Local Network
+    state Docker {
+        state Master {
+            virtual_body --> yolov5
+            yolov5 --> tracker
+        }
+    }
 ```
 
 > Deployment Diagram
