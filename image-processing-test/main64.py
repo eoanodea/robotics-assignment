@@ -26,14 +26,14 @@ image_string=image_string.replace(']','')
 
 
 # Convert the string to a list of floats
-# image_list = [float(x) for x in image_string.split()]
+image_list = [float(x) for x in image_string.split()]
 
 # Convert the list of floats to a NumPy array
-# image_array = np.array(image_list)
+image_array = np.array(image_list)
 #image_array = image_array[0:921600]
 
 # Reshape the NumPy array to the desired shape
-# image_array = image_array.reshape(480, 640, 3)
+image_array = image_array.reshape(480, 640, 3)
 
 #cap = cv2.VideoCapture('realhuman.jpg')
 
@@ -41,17 +41,17 @@ cv2.namedWindow('FRAME')
 
 tracker = Tracker()
 
-area_1a = [(0, 0), (200, 0), (200, 640), (0, 640)]
-area_1b = [(200, 0), (400, 0), (400, 640), (200, 640)]
-area_2a = [(760, 0), (960, 0), (960, 640), (760, 640)]
-area_2b = [(560, 0), (760, 0), (760, 640), (560, 640)]
+area_1a = [(0, 0), (90, 0), (90, 480), (0, 480)]
+area_1b = [(90, 0), (230, 0), (230, 480), (90, 480)]
+area_2a = [(550, 0), (640, 0), (640, 480), (550, 480)]
+area_2b = [(420, 0), (550, 0), (550, 480), (420, 480)]
 
-# frame = image_array
-# frame=cv2.resize(frame,(960,640))
-# cv2.polylines(frame,[np.array(area_1a,np.int32)],True,(0,255,0),3)
-# cv2.polylines(frame,[np.array(area_2a, np.int32)], True, (0, 255, 0), 3)
-# cv2.polylines(frame,[np.array(area_1b,np.int32)],True,(0,0,255),3)
-# cv2.polylines(frame,[np.array(area_2b, np.int32)], True, (0, 0, 255), 3)
+frame = image_array
+#frame=cv2.resize(frame,(640,480))
+cv2.polylines(frame,[np.array(area_1a,np.int32)],True,(0,0,255),3)
+cv2.polylines(frame,[np.array(area_2a, np.int32)], True, (0, 0, 255), 3)
+cv2.polylines(frame,[np.array(area_1b,np.int32)],True,(0,255,0),3)
+cv2.polylines(frame,[np.array(area_2b, np.int32)], True, (0, 255, 0), 3)
 
 # Process the frame here...
 results = model(frame)

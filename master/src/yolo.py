@@ -12,20 +12,21 @@ class ImageTracker:
         self._model = torch.hub.load(path, 'yolov5n', pretrained=True, source='local')
         self._model.classes = 0
 
-        self._area_1a = [(0, 0), (200, 0), (200, 640), (0, 640)]
-        self._area_1b = [(200, 0), (400, 0), (400, 640), (200, 640)]
-        self._area_2a = [(760, 0), (960, 0), (960, 640), (760, 640)]
-        self._area_2b = [(560, 0), (760, 0), (760, 640), (560, 640)]
+        self._area_1a = [(0, 0), (90, 0), (90, 480), (0, 480)]
+        self._area_1b = [(90, 0), (230, 0), (230, 480), (90, 480)]
+        self._area_2a = [(550, 0), (640, 0), (640, 480), (550, 480)]
+        self._area_2b = [(420, 0), (550, 0), (550, 480), (420, 480)]
 
         self._tracker = Tracker()
 
     def on_image(self, base64_image):
         # Remove the data URI scheme from the base64 data
-        img_data = base64_image.split(",")[1]
+        #img_data = base64_image.split(",")[1]
         # Decode the base64 image data and convert to a numpy array
-        img_bytes = base64.b64decode(img_data)
+        img_bytes = base64.b64decode(base64_image)
         img_arr = np.frombuffer(img_bytes, dtype=np.uint8)
-        img = cv2.imdecode(img_arr, cv2.IMREAD_COLOR)
+        #img = cv2.imdecode(img_arr, cv2.IMREAD_COLOR)
+        img = img_arr.reshape(480, 640, 3)
 
         frame = img
 
@@ -69,14 +70,15 @@ class ImageTracker:
                 # 2 - HARD RIGHT,
                 # 3 - turn left,
                 # 4 - turn right
-                result = 0
                 if result1a == 1:
-                    result = 1
+                    result = 'hard left'
                 elif result2a == 1:
-                    result = 2
+                    result = 'hard right'
                 elif result1b == 1:
-                    result = 3
+                    result = 'left'
                 elif result2b == 1:
-                    result = 4
+                    result = 'right'
+                else:
+                    result = 'center'
 
                 return result

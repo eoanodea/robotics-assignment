@@ -12,6 +12,8 @@ from std_msgs.msg import String
 from kobuki_msgs.msg import BumperEvent
 from sensor_msgs.msg import Image
 from geometry_msgs.msg import Twist
+from cv_bridge import CvBridge
+import cv2
 
 REDIS_HOST = os.environ['REDIS_URL']
 REDIS_PORT = os.environ['REDIS_PORT']
@@ -40,10 +42,14 @@ def cleanup():
 
 def callback_image(image_data):
     global REDIS_IMAGE_ID
+    # bridge = CvBridge()
     rospy.loginfo("Image data from ROS1")
+    # cv_image = bridge.imgmsg_to_cv2(image_data, desired_encoding='passthrough')
+    # buf = cv2.imencode('.jpg', cv_image)
+    # buf_bytes = bytes(buf)
     data_bytes = bytes(image_data.data)
     base64Image = base64.b64encode(data_bytes)
-        
+    # print(cv_image)
     hash_data = {
         'width': image_data.width,
         'height': image_data.height,
@@ -80,7 +86,7 @@ def main():
     rospy.init_node('robot_listener', anonymous=True)
     rospy.Subscriber("/debug/percept", String, callback_str)
 
-    rospy.Subscriber("/camera/depth/image_raw", Image, callback_image)
+    rospy.Subscriber("/camera/rgb/image_rect_color", Image, callback_image)
 
     pubsub = R.pubsub()
     pubsub.subscribe(COMMAND_CHANNEL)
@@ -94,13 +100,13 @@ def main():
             reccom = msg.get('data')
             if reccom == 'center':
                 move_cmd = Twist()
-            elif reccom == 'hard right':
-                move_cmd.angular.z = -0.5
             elif reccom == 'hard left':
+                move_cmd.angular.z = -0.5
+            elif reccom == 'hard right':
                 move_cmd.angular.z = 0.5
-            elif reccom == 'right':
-                move_cmd.angular.z = -0.3
             elif reccom == 'left':
+                move_cmd.angular.z = -0.3
+            elif reccom == 'right':
                 move_cmd.angular.z = 0.3
             else:
                 move_cmd = Twist()

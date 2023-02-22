@@ -51,7 +51,10 @@ class VirtualBody:
 
     def plan(self, perceptions):
         # Some logic based on the perception
+        #print(perceptions)
         cmd = self._image_tracker.on_image(perceptions['data'])
+        if not cmd:
+            return 'center'
         return cmd
 
     def send_command(self, command):
