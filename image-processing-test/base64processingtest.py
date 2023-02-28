@@ -11,4 +11,4 @@ img_arr = img_arr.reshape(177, 246, 3)
 #43542
 #img = cv2.imdecode(img_arr, cv2.IMREAD_COLOR)
 
-print(img)
+print(img_arr)

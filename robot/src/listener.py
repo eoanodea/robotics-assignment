@@ -44,6 +44,10 @@ def callback_image(image_data):
     global REDIS_IMAGE_ID
     # bridge = CvBridge()
     rospy.loginfo("Image data from ROS1")
+    # if (REDIS_IMAGE_ID % 3) != 0:
+    #     REDIS_IMAGE_ID = REDIS_IMAGE_ID + 1
+    #     return 0
+
     # cv_image = bridge.imgmsg_to_cv2(image_data, desired_encoding='passthrough')
     # buf = cv2.imencode('.jpg', cv_image)
     # buf_bytes = bytes(buf)
@@ -76,6 +80,7 @@ def callback_image(image_data):
   
 def main():
     global R
+    rate =rospy.Rate(1)
     R = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, decode_responses=True)
 
     #rospub = rospy.Publisher('/debug/command', String, queue_size=10)
@@ -87,7 +92,6 @@ def main():
     rospy.Subscriber("/debug/percept", String, callback_str)
 
     rospy.Subscriber("/camera/rgb/image_rect_color", Image, callback_image)
-
     pubsub = R.pubsub()
     pubsub.subscribe(COMMAND_CHANNEL)
 
@@ -95,18 +99,17 @@ def main():
         print("Command recieved", msg)
         if msg is not None and isinstance(msg, dict):
             #rospub.publish(msg.get('data'))
-
             #+ = left, - = right
             reccom = msg.get('data')
             if reccom == 'center':
                 move_cmd = Twist()
-            elif reccom == 'hard left':
-                move_cmd.angular.z = -0.5
             elif reccom == 'hard right':
+                move_cmd.angular.z = -0.5
+            elif reccom == 'hard left':
                 move_cmd.angular.z = 0.5
-            elif reccom == 'left':
-                move_cmd.angular.z = -0.3
             elif reccom == 'right':
+                move_cmd.angular.z = -0.3
+            elif reccom == 'left':
                 move_cmd.angular.z = 0.3
             else:
                 move_cmd = Twist()
@@ -114,7 +117,7 @@ def main():
 
     # spin() simply keeps python from
     # exiting until this node is stopped
-    rospy.spin()
+    rate.sleep()
 
 
 if __name__ == '__main__':

@@ -28,7 +28,7 @@ frame = image_array
 cv2.namedWindow('FRAME')
 cv2.imshow('FRAME', frame)
 
-if cv2.waitKey(0) & 0xFF == 27:
+if cv2.waitKey(1) & 0xFF == 27:
     cv2.destroyAllWindows()
 
 # img = Image.fromarray(frame.astype(int), 'RGB')
