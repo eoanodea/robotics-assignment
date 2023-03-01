@@ -41,12 +41,14 @@ class VirtualBody:
                     # @TODO TypeError: the JSON object must be str, bytes or bytearray, not NoneType
                     # @TODO - auto delete images after 2 mins of not being used
                     image = self._my_msg_broker.hget(self._my_perceptions['hashset'], self._my_perceptions['ID'])
-                    parsed_image = json.loads(image)
-                    print('got image')
-                    print(parsed_image['width'])
-                    self._my_msg_broker.hdel(self._my_perceptions['hashset'], self._my_perceptions['ID'])
-                    # self._my_perceptions = msg['data']
-                return parsed_image
+                    if image is not None:
+                        parsed_image = json.loads(image)
+                        print('got image')
+                        print(parsed_image['width'])
+                        self._my_msg_broker.hdel(self._my_perceptions['hashset'], self._my_perceptions['ID'])
+                        # self._my_perceptions = msg['data']
+                        
+                        return parsed_image
             time.sleep(0.1)
 
     def plan(self, perceptions):

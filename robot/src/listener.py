@@ -6,6 +6,7 @@ import os
 import base64
 import json
 import time
+import threading
 import numpy as np
 
 from std_msgs.msg import String
@@ -27,18 +28,31 @@ def callback_str(data):
     rospy.loginfo("String from ros1 %s", (data.data))
     R.publish(PERCEPT_CHANNEL, data.data)
 
+def cleanup_loop():
+    while True:
+        cleanup()
+        time.sleep(5)
+
 # Any images older than 30 seconds 
 # in the hash set is removed
 def cleanup():
-    for key in R.hkeys(REDIS_HASHSET_NAME):
-        value = R.hget(REDIS_HASHSET_NAME, key)
-        hash_data = eval(value)
-        timestamp = hash_data.get('timestamp', 0)
-        current_time = time.time()
-        
-        if current_time - timestamp >= 30:
-            print("[CLEANUP] - Removing old image with ID" , key)
-            R.hdel(REDIS_HASHSET_NAME, key)
+    if 'R' in globals():
+        global REDIS_HASHSET_NAME, R
+        keys = R.hkeys(REDIS_HASHSET_NAME)
+        if not keys:
+            return
+        for key in keys:
+            value = R.hget(REDIS_HASHSET_NAME, key)
+            if not value:
+                return
+            hash_data = eval(value)
+            timestamp = hash_data.get('timestamp', 0)
+            current_time = time.time()
+            
+            if current_time - timestamp >= 5:
+                print("[CLEANUP] - Removing old image with ID", key)
+                R.hdel(REDIS_HASHSET_NAME, key)
+
 
 def callback_image(image_data):
     global REDIS_IMAGE_ID
@@ -80,7 +94,7 @@ def callback_image(image_data):
   
 def main():
     global R
-    rate =rospy.Rate(1)
+    
     R = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, decode_responses=True)
 
     #rospub = rospy.Publisher('/debug/command', String, queue_size=10)
@@ -92,6 +106,8 @@ def main():
     rospy.Subscriber("/debug/percept", String, callback_str)
 
     rospy.Subscriber("/camera/rgb/image_rect_color", Image, callback_image)
+    rate = rospy.Rate(1)
+
     pubsub = R.pubsub()
     pubsub.subscribe(COMMAND_CHANNEL)
 
@@ -122,8 +138,10 @@ def main():
 
 if __name__ == '__main__':
 
-    # you could name this function
-    try:
-        main()
-    except rospy.ROSInterruptException:
-        pass
+    # cleanup thread
+    cleanup_thread = threading.Thread(target=cleanup_loop)
+    cleanup_thread.daemon = True
+    cleanup_thread.start()
+    
+    # main thread
+    main()
