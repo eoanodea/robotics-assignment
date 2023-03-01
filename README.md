@@ -81,24 +81,50 @@ stateDiagram-v2
     channel: Channel
     hash_set: Hash Set
     virtual_body: Virtual Body
-    yolov5: YoloV5
-    tracker: Tracker
-
+    main: Main Thread
+    cleanup: Cleanup Thread
+    check_redis: Check Redis
+    image_old: Image older than 5s
+    remove: Remove Image
+    process_image: Process Image
+    convert_to_cmd: Convert to Command
+    send_command: Send Command
+    state image_exists <<choice>>
 
     state Robot {
-        kobuki_node --> ros_1_listener
-        ros_1_listener -->  hash_set: base64 Image
-        ros_1_listener --> channel: Image ID
-        state Redis {
-            channel
-            hash_set
+        state cleanup {
+            [*] --> check_redis
+            check_redis --> hash_set
+            hash_set --> image_old
+
+            image_old --> image_exists: yes
+            image_old --> [*]: no
+            image_exists --> remove
+            remove --> [*]
+
+        }
+        state main {
+            kobuki_node --> ros_1_listener
+            ros_1_listener -->  hash_set: base64 Image
+            ros_1_listener --> channel: Image ID
+            state Redis {
+                channel
+                hash_set
+            }
         }
     }
     Robot --> Docker: Local Network
     state Docker {
         state Master {
-            virtual_body --> yolov5
-            yolov5 --> tracker
+            [*] --> virtual_body
+            virtual_body --> Yolov5
+            Yolov5 --> send_command
+            send_command --> [*]
+            state Yolov5 {
+                [*] --> process_image
+                process_image --> convert_to_cmd
+                convert_to_cmd --> [*]
+            }
         }
     }
 ```
