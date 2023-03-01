@@ -55,8 +55,17 @@ def cleanup():
 
 
 def callback_image(image_data):
+
     global REDIS_IMAGE_ID
+
+    # Only process every 30th image
+    if REDIS_IMAGE_ID % 30 != 0:
+        REDIS_IMAGE_ID += 1
+        return
     
+    print("[ROSPY] - Sending image")
+
+
     data_bytes = bytes(image_data.data)
     base64Image = base64.b64encode(data_bytes)
     
@@ -82,7 +91,6 @@ def callback_image(image_data):
     R.publish(PERCEPT_CHANNEL, json_published_data)
     
     REDIS_IMAGE_ID = REDIS_IMAGE_ID + 1
-    cleanup()
   
 def main():
     global R
@@ -98,7 +106,7 @@ def main():
     rospy.Subscriber("/debug/percept", String, callback_str)
 
     rospy.Subscriber("/camera/rgb/image_rect_color", Image, callback_image)
-    rate = rospy.Rate(10)
+    rate = rospy.Rate(1)
 
     pubsub = R.pubsub()
     pubsub.subscribe(COMMAND_CHANNEL)
