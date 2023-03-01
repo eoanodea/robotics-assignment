@@ -36,25 +36,23 @@ class VirtualBody:
             msg = self._pub_sub.get_message()
             if msg:
                 self._my_perceptions = json.loads(msg['data'])
-                if self._my_perceptions['type'] == 'image':
-                    print('getting image')
-                    # @TODO TypeError: the JSON object must be str, bytes or bytearray, not NoneType
-                    # @TODO - auto delete images after 2 mins of not being used
+                if self._my_perceptions['type'] == 'image':                    
                     image = self._my_msg_broker.hget(self._my_perceptions['hashset'], self._my_perceptions['ID'])
                     if image is not None:
                         parsed_image = json.loads(image)
-                        print('got image')
-                        print(parsed_image['width'])
                         self._my_msg_broker.hdel(self._my_perceptions['hashset'], self._my_perceptions['ID'])
-                        # self._my_perceptions = msg['data']
-                        
                         return parsed_image
             time.sleep(0.1)
 
     def plan(self, perceptions):
         # Some logic based on the perception
-        #print(perceptions)
+        start_time = time.time()
         cmd = self._image_tracker.on_image(perceptions['data'])
+        
+        end_time = time.time()
+        elapsed_time = round(end_time - start_time, 3)
+
+        print(cmd, "Elapsed time:", elapsed_time, "seconds")
         if not cmd:
             return 'center'
         return cmd

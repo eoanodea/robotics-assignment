@@ -56,18 +56,10 @@ def cleanup():
 
 def callback_image(image_data):
     global REDIS_IMAGE_ID
-    # bridge = CvBridge()
-    rospy.loginfo("Image data from ROS1")
-    # if (REDIS_IMAGE_ID % 3) != 0:
-    #     REDIS_IMAGE_ID = REDIS_IMAGE_ID + 1
-    #     return 0
-
-    # cv_image = bridge.imgmsg_to_cv2(image_data, desired_encoding='passthrough')
-    # buf = cv2.imencode('.jpg', cv_image)
-    # buf_bytes = bytes(buf)
+    
     data_bytes = bytes(image_data.data)
     base64Image = base64.b64encode(data_bytes)
-    # print(cv_image)
+    
     hash_data = {
         'width': image_data.width,
         'height': image_data.height,
@@ -106,7 +98,7 @@ def main():
     rospy.Subscriber("/debug/percept", String, callback_str)
 
     rospy.Subscriber("/camera/rgb/image_rect_color", Image, callback_image)
-    rate = rospy.Rate(1)
+    rate = rospy.Rate(10)
 
     pubsub = R.pubsub()
     pubsub.subscribe(COMMAND_CHANNEL)
